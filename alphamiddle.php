@@ -18,7 +18,7 @@ print "<center><h2>".$login_to_database.'  '.$login_to_NJIT_website."</h2></cent
 
 // function for login to any NJIT site
 function loginnjitscript($username, $password)
-{	stringdata =  array("username"=> $username, "password" => $password, "uuid" => "0xACA021");
+{	stringdata =  array("user"=> $username, "pass" => $password, "uuid" => "0xACA021");
 	$cookie = "cookie.txt";
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_URL, "https://aevitepr2.njit.edu/MyHousing/login.html");
