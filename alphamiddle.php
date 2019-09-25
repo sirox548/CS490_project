@@ -34,7 +34,7 @@ function loginnjitscript($username, $password)
 //	if (strpos($stringrcvd,"Cannot login - error")==false) return "Can login to NJIT";
 //	return "Cannot login to NJIT";
 	if ($info['http_code'] == 200)
-    { return " Can login to NJIT";
+    { return "Can login to NJIT";
       }
 	else
     { return "Cannot login to NJIT";
