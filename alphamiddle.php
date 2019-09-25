@@ -9,7 +9,7 @@ $password="none";
 if ( isset($stringrcvd['username']))
 	{ $username=$stringrcvd['username'];
     }
-if ( isset($stringrcve['password']))
+if ( isset($stringrcvd['password']))
 	{ $password=$stringrcvd['password'];
     }
 $login_to_NJIT_website=loginnjitscript($username,$password);
