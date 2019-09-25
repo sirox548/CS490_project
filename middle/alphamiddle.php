@@ -1,16 +1,16 @@
 <?php
 //**************CS490 Project ************
 //**************Marian Oleksy ************
-$input_json = file_get_contents('php://input');
-$stringrcvd = json_decode($input_json, true);
+/*$input_json = file_get_contents('php://input');
+$stringrcvd = json_decode($input_json, true);*/
 $username="none";
 $password="none";
 
-if ( isset($stringrcvd['username']))
-	{ $username=$stringrcvd['username'];
+if ( isset($_POST['username']))
+	{ $username=$_POST['username'];
     }
-if ( isset($stringrcvd['password']))
-	{ $password=$stringrcvd['password'];
+if ( isset($_POST['password']))
+	{ $password=$_POST['password'];
     }
 $login_to_NJIT_website=loginnjitscript($username,$password);
 $login_to_database=loginscript($username,$password);
