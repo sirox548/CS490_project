@@ -8,10 +8,25 @@ function login(){
     }
 
     request.onreadystatechange = function(){
-        if (request.readyState == 4){
-            document.getElementById("response").innerHTML = request.responseText;
-        }
-    }
+				if (request.readyState == 4){
+					var responseData = JSON.parse(request.responseText);
+					var output = "";
+					if(responseData.database=="Can login to database"){
+						output += "<center><h2><font color='blue'>"+responseData.database+"</font></h2></center>";
+					}
+					else{
+						output += "<center><h2><font color='red'>"+responseData.database+"</font></h2></center>";
+					}
+					output += "<br>";
+					if(responseData.njit=="Can login to NJIT"){
+						output += "<center><h2><font color='blue'>"+responseData.njit+"</font></h2></center>";
+					}
+					else{
+						output += "<center><h2><font color='red'>"+responseData.njit+"</font></h2></center>";
+					}
+					document.getElementById("response").innerHTML = output;
+				}
+			}
 
     var user = document.getElementById("ucid").value;
     var pswd = document.getElementById("pass").value;
