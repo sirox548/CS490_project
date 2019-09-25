@@ -13,7 +13,7 @@ if ( isset($stringrcvd['password']))
 	{ $password=$stringrcvd['password'];
     }
 $login_to_NJIT_website=loginnjitscript($username,$password);
-$login_to_database=loginscript($username,md5($password));
+$login_to_database=loginscript($username,$password);
 print "<center><h2>".$login_to_database.'  '.$login_to_NJIT_website."</h2></center>";
 
 // function for login to any NJIT site
