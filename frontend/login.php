@@ -1,12 +1,12 @@
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
 	<script src="login.js" type="text/JavaScript"></script>
 </head>
 
 <body>
+    <h1>Login</h1>
     <div id="login">
         <form id="login" method="POST">
-            <h1>Login</h1>
             <table>
                 <tr>
                     <td>Username:</td>
@@ -28,5 +28,7 @@
             </table>
         </form>
     </div>
+
+    <div id="response"></div>
 </body>
 

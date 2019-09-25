@@ -9,7 +9,7 @@ function login(){
 
     request.onreadystatechange = function(){
         if (request.readyState == 4){
-            document.getElementById("login").innerHTML = request.responseText;
+            document.getElementById("response").innerHTML = request.responseText;
         }
     }
 
