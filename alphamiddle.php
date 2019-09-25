@@ -12,13 +12,13 @@ if ( isset($stringrcvd['username']))
 if ( isset($stringrcve['password']))
 	{ $password=$stringrcvd['password'];
     }
-$login_to_NJIT_website=loginnjitscript($username,$password));
+$login_to_NJIT_website=loginnjitscript($username,$password);
 $login_to_database=loginscript($username,md5($password));
 print "<center><h2>".$login_to_database.'  '.$login_to_NJIT_website."</h2></center>";
 
 // function for login to any NJIT site
 function loginnjitscript($username, $password)
-{	stringdata =  array("user"=> $username, "pass" => $password, "uuid" => "0xACA021");
+{	$stringdata =  array("user"=> $username, "pass" => $password, "uuid" => "0xACA021");
 	$cookie = "cookie.txt";
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_URL, "https://aevitepr2.njit.edu/MyHousing/login.html");
@@ -42,7 +42,7 @@ function loginnjitscript($username, $password)
 }
 // function for login to database
 function loginscript($username, $password)
-{ stringdata =  array('username'=> $username, 'password' => $password);
+{ $stringdata =  array('username'=> $username, 'password' => $password);
   $infoback = curl_init();
   curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
   curl_setopt($infoback, CURLOPT_POSTFIELDS, json_encode($stringdata));
