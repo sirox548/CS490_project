@@ -7,7 +7,7 @@ function login(){
         request = new ActiveXObject("Microsoft.XMLHTTP");
     }
 
-    request.onReadyStateChange = function(){
+    request.onreadystatechange = function(){
         if (request.readyState == 4){
             document.getElementById("login").innerHTML = request.responseText;
         }
