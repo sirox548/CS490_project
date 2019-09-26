@@ -20,7 +20,7 @@ echo $output;
 
 // function for login to any NJIT site
 function loginnjitscript($username, $password)
-{	$stringdata =  array("user"=> $username, "pass" => $password, "uuid" => "0xACA021");
+{	$stringdata =  array("ucid"=> $username, "pass" => $password, "uuid" => "0xACA021");
 	$cookie = "cookie.txt";
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_URL, "https://aevitepr2.njit.edu/MyHousing/login.cfm");
@@ -37,7 +37,7 @@ function loginnjitscript($username, $password)
 	if ($status==200)
 		{ return "Cannot login to NJIT";
 	}
-	else if($status==302)
+	else//($status==302)
 		{ return "Can login to NJIT";
 	}
 }
