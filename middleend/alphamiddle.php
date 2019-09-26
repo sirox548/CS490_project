@@ -32,13 +32,12 @@ function loginnjitscript($username, $password)
 	curl_setopt($infoback, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($infoback, CURLOPT_REFERER, "https://aevitepr2.njit.edu/MyHousing/login.cfm"); 
 	$stringrcvd = curl_exec($infoback);
-	curl_close ($infoback);	
-//	if (strpos($stringrcvd,"Cannot login - error")==false) return "Can login to NJIT";
-//	return "Cannot login to NJIT";
-	if (strpos($stringrcvd,"Please Select a System to Sign Into") === false)
+	$status = curl_getinfo($infoback, CURLINFO_HTTP_CODE);
+	curl_close($infoback);
+	if ($status==200)
 		{ return "Cannot login to NJIT";
 	}
-	else
+	else if($status==302)
 		{ return "Can login to NJIT";
 	}
 }
