@@ -36,7 +36,7 @@ function login() {
 	var user = document.getElementById("ucid").value;
 	var pswd = document.getElementById("pass").value;
 
-	request.open("POST", "https://web.njit.edu/~mo27/CS490/alphamiddle.php", true)
+	request.open("POST", "https://web.njit.edu/~mo27/CS490/alphamiddle.php", true);
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	request.send("ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
 }
