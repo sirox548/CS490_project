@@ -15,6 +15,7 @@ function login() {
 
 			if (responseData.database == "Can login to database") {
 				output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
+				window.location.href = '/~anm52/CS490/home.html'
 			}
 			else {
 				output += "<center><h2><font color='red'>" + responseData.database + "</font></h2></center>";
