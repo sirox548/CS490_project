@@ -1,0 +1,40 @@
+<script src="testSystem.js" type="text/JavaScript"></script>
+<body>
+
+<h2>Create a New Question</h2>
+    <form>
+      Question:<br>
+      <input type="text" id="question">
+      <br><br>
+      Function Name:<br>
+      <input type="text" id="funcName">
+      <br><br>
+      Parameters:<br>
+      <input type="text" id="params">
+      <br><br>
+      Test Case Input:<br>
+      <input type="text" id="input">
+      <br><br>
+      Expected Output:<br>
+      <input type="text" id="output">
+      <br><br>
+      Difficulty:<br>
+      <select id="difficulty">
+        <option value="easy">easy</option>
+        <option value="medium">medium</option>
+        <option value="hard">hard</option>
+      </select>
+      <br><br>
+      Category:<br>
+      <select id="category">
+        <option value="conditional">conditional</option>
+        <option value="loops">loops</option>
+      </select>
+      <br><br>
+      <input type="button" onclick="submitNewQuestion();" value="Submit">
+    </form>
+
+    <div id="response"></div>
+
+</body>
+
