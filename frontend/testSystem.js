@@ -61,7 +61,7 @@ function submitNewQuestion(){
 				output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
 			}
 			else {
-				output += "<center><h2><font color='red'>" + responseData.database + "</font></h2></center>";
+				output += "<center><h2><font color='red'> Something went wrong :( </font></h2></center>";
 			}
 
 			output += "<br>";

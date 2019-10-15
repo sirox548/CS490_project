@@ -1,0 +1,57 @@
+<script src="testSystem.js" type="text/JavaScript"></script>
+<style>    
+    .leftside, .rightside {
+        height:100vh;
+        width:100%
+    }
+    .leftside{
+        background:grey
+    }
+</style>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <a href="/~anm52/CS490/home.html">Home</a>
+    <h2>Create an Exam</h2>
+
+    <div class="row">
+        <div class="col">
+            <div class="leftside">
+
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="rightside">
+                <form>
+                    <table id="selectQuestions"></table>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+  window.onload = function() {
+    var data = "<th>Question</th><th>Difficulty</th><th>Category</th>"
+    var request = new XMLHttpRequest();
+    var params = "postType=questionBank";
+    request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+    request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+      if (request.readyState === 4 && request.status == 200) {
+        var responseData = JSON.parse(request.responseText);
+        for (i = 0; i<responseData.length; i++){
+          var question = resp[i];
+          data+='<tr><td>'+responseData.question+'</td><td>'+responseData.category+'</td><td>'+responseData.difficulty+'<input id='+data.question+' type="checkbox" onclick="addQuestion(this);" /></td></tr>';
+        }
+        document.getElementById('selectQuestions').innerHTML = data;
+    }
+  }
+  request.send(params);
+}
+</script>
+
+</body>

@@ -1,61 +1,66 @@
 <script src="testSystem.js" type="text/JavaScript"></script>
-<style>
-  .panel1 {
-    float:left;
-    width:500px;
-  }
-
-  .panel2 {
-    float:right;
-    width:250px;
-    background:#c9c;
-  }
-
-  .panels {
-    overflow: hidden;
-  }
+<style>    
+    .leftside, .rightside {
+        height:100vh;
+        width:100%
+    }
+    .leftside{
+        background:grey;
+        padding-left: 10%;
+        padding-top: 10%
+    }
 </style>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
 <body>
-<div class = "panels">
-  <div siv="panel1">
+    <a href="/~anm52/CS490/home.html">Home</a>
     <h2>Create a New Question</h2>
-        <form>
-          Question:<br>
-          <textarea type="text" id="question" aria-rowspan="20"></textarea>
-          <br><br>
-          Function Name:<br>
-          <input type="text" id="funcName">
-          <br><br>
-          Parameters:<br>
-          <input type="text" id="params">
-          <br><br>
-          Test Case Input:<br>
-          <input type="text" id="input">
-          <br><br>
-          Expected Output:<br>
-          <input type="text" id="output">
-          <br><br>
-          Difficulty:<br>
-          <select id="difficulty">
-            <option value="easy">easy</option>
-            <option value="medium">medium</option>
-            <option value="hard">hard</option>
-          </select>
-          <br><br>
-          Category:<br>
-          <select id="category">
-            <option value="conditional">conditional</option>
-            <option value="loops">loops</option>
-          </select>
-          <br><br>
-          <input type="button" onclick="submitNewQuestion();" value="Submit">
-        </form>
-        
-      <div id="response"></div>
+<div class = "row">
+  <div class="col">
+    <div class="leftside">
+          <form>
+            Question:<br>
+            <textarea type="text" id="question" aria-rowspan="20"></textarea>
+            <br><br>
+            Function Name:<br>
+            <input type="text" id="funcName">
+            <br><br>
+            Parameters:<br>
+            <input type="text" id="params">
+            <br><br>
+            Test Case Input:<br>
+            <input type="text" id="input">
+            <br><br>
+            Expected Output:<br>
+            <input type="text" id="output">
+            <br><br>
+            Difficulty:<br>
+            <select id="difficulty">
+              <option value="easy">easy</option>
+              <option value="medium">medium</option>
+              <option value="hard">hard</option>
+            </select>
+            <br><br>
+            Category:<br>
+            <select id="category">
+              <option value="conditional">conditional</option>
+              <option value="loops">loops</option>
+            </select>
+            <br><br>
+            <input type="button" onclick="submitNewQuestion();" value="Submit">
+          </form>
+          
+        <div id="response"></div>
+      </div>
     </div>
 
-    <div class="panel2">
-        <table id="questionBank"></table>
+    <div class="col">
+      <div class="rightside">
+          <h3>Question Bank</h3>
+          <table id="questionBank"></table>
+      </div>
     </div>
 </div>
 <script>
