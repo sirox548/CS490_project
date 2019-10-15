@@ -13,6 +13,7 @@ function login() {
 			var responseData = JSON.parse(request.responseText);
 			var output = "";
 
+			//response data should be changed to teacher/student/not recognized
 			if (responseData.database == "Can login to database") {
 				output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
 				window.location.href = '/~anm52/CS490/home.html'
@@ -57,11 +58,11 @@ function submitNewQuestion(){
 			var responseData = JSON.parse(request.responseText);
 			var output = "";
 
-			if (responseData.database == "Question added succesfully") {
-				output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
+			if (responseData.database == "success") {
+				output += "<center><h2><font color='green'>" + responseData.database + "</font></h2></center>";
 			}
 			else {
-				output += "<center><h2><font color='red'> Something went wrong :( </font></h2></center>";
+				output += "<center><h2><font color='red'> Something went wrong </font></h2></center>";
 			}
 
 			output += "<br>";
@@ -84,3 +85,14 @@ function submitNewQuestion(){
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	request.send(questionData);
 }
+
+//adds question to an exam that is being created
+function addQuestion() {
+
+}
+
+//creates a new exam
+function createExam(){
+
+}
+

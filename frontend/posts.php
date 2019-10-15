@@ -1,5 +1,5 @@
 <?php
-	$postType = $_postType
+	$postType = $_POST ["postType"];
 
 	$username = "none";
 	$password = "none";
@@ -21,8 +21,12 @@
 	if ( isset($_POST['difficulty'])){ $difficulty=$_POST['difficulty'];}
 	if ( isset($_POST['category'])){ $category=$_POST['category'];}
 
+	//post type must be implemented on back and middle 
+	// if ($postType == "login"){
+	// 	$stringdata =  array('postType'=> $postType, 'ucid'=> $username, 'pwd' => $password);
+	// }
 	if ($postType == "login"){
-		$stringdata =  array('postType'=> $postType, 'ucid'=> $username, 'pwd' => $password);
+		$stringdata =  array('ucid'=> $username, 'pwd' => $password);
 	}
 	elseif ($postType == "addQuestion") {
 		$stringdata =  array('postType'=> $postType, 'question'=> $question, 'funcName' => $funcName, 'params'=> $params, 'input' => $input,'output' => $output, 'difficulty' => $difficulty, 'category' => $category );
@@ -34,7 +38,7 @@
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($infoback, CURLOPT_POSTFIELDS, http_build_query($stringdata));
-	curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~mo27/CS490/betamiddlemain.php");
+	curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~mo27/CS490/alphamiddle.php");
 	curl_setopt($infoback, CURLOPT_COOKIEJAR, realpath($cookie));
 	$stringrcvd = curl_exec($infoback);
 	curl_close ($infoback);
