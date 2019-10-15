@@ -1,40 +1,83 @@
 <script src="testSystem.js" type="text/JavaScript"></script>
+<style>
+  .panel1 {
+    float:left;
+    width:500px;
+  }
+
+  .panel2 {
+    float:right;
+    width:250px;
+    background:#c9c;
+  }
+
+  .panels {
+    overflow: hidden;
+  }
+</style>
 <body>
+<div class = "panels">
+  <div siv="panel1">
+    <h2>Create a New Question</h2>
+        <form>
+          Question:<br>
+          <textarea type="text" id="question" aria-rowspan="20"></textarea>
+          <br><br>
+          Function Name:<br>
+          <input type="text" id="funcName">
+          <br><br>
+          Parameters:<br>
+          <input type="text" id="params">
+          <br><br>
+          Test Case Input:<br>
+          <input type="text" id="input">
+          <br><br>
+          Expected Output:<br>
+          <input type="text" id="output">
+          <br><br>
+          Difficulty:<br>
+          <select id="difficulty">
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
+          </select>
+          <br><br>
+          Category:<br>
+          <select id="category">
+            <option value="conditional">conditional</option>
+            <option value="loops">loops</option>
+          </select>
+          <br><br>
+          <input type="button" onclick="submitNewQuestion();" value="Submit">
+        </form>
+        
+      <div id="response"></div>
+    </div>
 
-<h2>Create a New Question</h2>
-    <form>
-      Question:<br>
-      <input type="text" id="question">
-      <br><br>
-      Function Name:<br>
-      <input type="text" id="funcName">
-      <br><br>
-      Parameters:<br>
-      <input type="text" id="params">
-      <br><br>
-      Test Case Input:<br>
-      <input type="text" id="input">
-      <br><br>
-      Expected Output:<br>
-      <input type="text" id="output">
-      <br><br>
-      Difficulty:<br>
-      <select id="difficulty">
-        <option value="easy">easy</option>
-        <option value="medium">medium</option>
-        <option value="hard">hard</option>
-      </select>
-      <br><br>
-      Category:<br>
-      <select id="category">
-        <option value="conditional">conditional</option>
-        <option value="loops">loops</option>
-      </select>
-      <br><br>
-      <input type="button" onclick="submitNewQuestion();" value="Submit">
-    </form>
+    <div class="panel2">
+        <table id="questionBank"></table>
+    </div>
+</div>
+<script>
 
-    <div id="response"></div>
+  window.onload = function() {
+    var data = "<th>Question</th><th>Difficulty</th><th>Category</th>"
+    var request = new XMLHttpRequest();
+    var params = "postType=questionBank";
+    request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+    request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+      if (request.readyState === 4 && request.status == 200) {
+        var responseData = JSON.parse(request.responseText);
+        for (i = 0; i<responseData.length; i++){
+          var question = resp[i];
+          data+='<tr><td>'+responseData.question+'</td><td>'+responseData.category+'</td><td>'+responseData.difficulty+'</td></tr>';
+        }
+        document.getElementById('questionBank').innerHTML = data;
+    }
+  }
+  request.send(params);
+}
+</script>
 
 </body>
-

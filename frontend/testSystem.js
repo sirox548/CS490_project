@@ -37,9 +37,9 @@ function login() {
 	var user = document.getElementById("ucid").value;
 	var pswd = document.getElementById("pass").value;
 
-	request.open("POST", "https://web.njit.edu/~anm52/CS490/login.php", true)
+	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	request.send("ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
+	request.send( "postType=login"+"ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
 }
 
 function submitNewQuestion(){
@@ -77,10 +77,10 @@ function submitNewQuestion(){
 	var difficulty = document.getElementById("difficulty").value;
 	var category = document.getElementById("category").value;
 
-	var questionData = "question=" + question + "&funcName=" + funcName + "&params=" + params + 
+	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
 	"&input=" + input + "&output=" + output + + "&difficulty=" + difficulty + "&category=" + category;
 
-	request.open("POST", "https://web.njit.edu/~anm52/CS490/newQuestion.php", true)
+	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	request.send(questionData);
 }
