@@ -6,6 +6,7 @@
 			//Login to database
 			$username = $_POST['ucid'];
 			$password = $_POST['pwd'];
+			login($username, $password);
 			break;
 		case "addQuestion":
 			//Add question to test
@@ -16,9 +17,16 @@
 			$output = $_POST['output'];
 			$difficulty = $_POST['difficulty'];
 			$category = $_POST['category'];
+			addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category);
 			break;
 		case "questionBank":
 			//Request for Bank
+			break;
+		case "createExam":
+			//Create an exam
+			$examName = $_POST['examName'];
+			$examQuestions = $_POST['examQuestions'];
+			createExam($examName,$examQuestions);
 			break;
 		default:
 			break;
@@ -45,7 +53,7 @@
 			}
 	}
 	
-	function addQuestion() {
+	function addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category) {
 		//Function to add question to test
 		
 	}
@@ -53,6 +61,10 @@
 	function questionBank() {
 		//Function to retrieve question bank from DB
 		
+	}
+	
+	function createExam($examName,$examQuestions) {
+		//Function to add an exam to the DB
 	}
 	
 ?>
