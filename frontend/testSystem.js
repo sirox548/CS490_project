@@ -99,6 +99,10 @@ function addQuestion() {
 
 //creates a new exam
 function createExam(){
+	var examQuestions=getSelectedQuestions();
+	var points=getPointValues();
+	var examName=document.getElementById('testName').value;
 
+	//then send the request
 }
 
