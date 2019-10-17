@@ -46,10 +46,10 @@
 			$rows = mysqli_fetch_array($result);
 			if($rows['password']==$hpwd){
 				$role = $rows['role'];
-				echo "{\"database\":\"Can login to database\",\"role\":\"".$role."\"}";
+				echo "{\"database\":true,\"role\":\"".$role."\"}";
 			}
 			else {
-				echo "{\"database\":\"Cannot login to database\"}";
+				echo "{\"database\":false}";
 			}
 	}
 	
