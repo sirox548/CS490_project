@@ -53,6 +53,7 @@
 			else {
 				echo "{\"database\":false}";
 			}
+		mysql_close($con);
 	}
 	
 	function addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category) {
