@@ -15,21 +15,27 @@ function login() {
 
 			//response data should be changed to teacher/student/not recognized
 			if (responseData.database == "Can login to database") {
-				output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
-				window.location.href = '/~anm52/CS490/home.html'
+				if (responseData.role == "instructor") {
+					window.location.href = '/~anm52/CS490/home.html';
+				}
+				else {
+					window.location.href = '/~anm52/CS490/studentHome.html';
+				}
+				//output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
+				
 			}
 			else {
 				output += "<center><h2><font color='red'>" + responseData.database + "</font></h2></center>";
 			}
 
-			output += "<br>";
+			// output += "<br>";
 
-			if (responseData.njit == "Can login to NJIT") {
-				output += "<center><h2><font color='blue'>" + responseData.njit + "</font></h2></center>";
-			}
-			else {
-				output += "<center><h2><font color='red'>" + responseData.njit + "</font></h2></center>";
-			}
+			// if (responseData.njit == "Can login to NJIT") {
+			// 	output += "<center><h2><font color='blue'>" + responseData.njit + "</font></h2></center>";
+			// }
+			// else {
+			// 	output += "<center><h2><font color='red'>" + responseData.njit + "</font></h2></center>";
+			// }
 
 			document.getElementById("response").innerHTML = output;
 		}
