@@ -10,7 +10,7 @@
 			break;
 		case "addQuestion":
 			//Add question to test
-			$question = $_POST['question'];
+			$question = $_POST['question'];//full question
 			$funcname = $_POST['funcName'];
 			$params = $_POST['params'];
 			$input = $_POST['input'];
@@ -32,11 +32,14 @@
 		default:
 			break;
 	}
+	$DB_link = "sql.njit.edu";
+	$DB_username = "rjb57";
+	$DB_password = PASSWORD;
 	
-	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 	
 	function login($username,$password) {
 		//Function to log into DB
+		$con = mysqli_connect($DB_link,$DB_username, $DB_password);
 		$hpwd = hash("sha256", $hpwd);
 			if (!$con) {
 				die('Could not connect: ' . mysqli_error($con));	
@@ -53,17 +56,34 @@
 			else {
 				echo "{\"database\":false}";
 			}
-		mysql_close($con);
+		mysqli_close($con);
 	}
 	
 	function addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category) {
 		//Function to add question to test
+		$con = mysqli_connect($DB_link,$DB_username, $DB_password);
+		if (!$con) {
+			die('Could not connect: ' . mysqli_error($con));	
+		}
 		
+		mysqli_select_db($con,"rjb57");
+		$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$username."';";
+		
+		
+		mysqli_close($con);
 	}
 	
 	function questionBank() {
 		//Function to retrieve question bank from DB
+		$con = mysqli_connect($DB_link,$DB_username, $DB_password);
+		if (!$con) {
+			die('Could not connect: ' . mysqli_error($con));	
+		}
 		
+		mysqli_select_db($con,"rjb57");
+		$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$username."';";
+		
+		mysqli_close($con);
 	}
 	
 	function createExam($examName,$examQuestions) {
