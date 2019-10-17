@@ -33,15 +33,19 @@
 		$stringdata =  array('ucid'=> $username, 'pwd' => $password);
 	}
 	elseif ($postType == "addQuestion") {
+		//Should add a wustion in the database
 		$stringdata =  array('postType'=> $postType, 'question'=> $question, 'funcName' => $funcName, 'params'=> $params, 'input' => $input,'output' => $output, 'difficulty' => $difficulty, 'category' => $category );
 	}
 	elseif ($postType == "questionBank") {
+		//should return all questions saved in the databade
 		$stringdata =  array('postType'=> $postType);
 	}
 	elseif ($postType == "createExam") {
+		//Should save the newly created exam
 		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'examQuestions' => $examQuestions);
 	}
 	elseif ($postType == "scores") {
+		//Should return student name, exam name, and score for all saved exam scores
 		$stringdata =  array('postType'=> $postType);
 	}
 
