@@ -21,6 +21,7 @@
 			break;
 		case "questionBank":
 			//Request for Bank
+			questionBank();
 			break;
 		case "createExam":
 			//Create an exam
@@ -32,10 +33,11 @@
 			break;
 	}
 	
+	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+	
 	function login($username,$password) {
 		//Function to log into DB
 		$hpwd = hash("sha256", $hpwd);
-			$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 			if (!$con) {
 				die('Could not connect: ' . mysqli_error($con));	
 			}
