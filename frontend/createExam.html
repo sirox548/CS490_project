@@ -22,14 +22,10 @@
                     <br>
                     <input type="text" id="testName" placeholder="Exam name">
                     <input type="button" onclick="createExam();" value="Create Exam">
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="rightside">
-                <form>
-                    <table id="selectQuestions"></table>
-                </form>
+                    <div id="response"></div>
+                    <form>
+                        <table id="questionBank"></table>
+                    </form>
             </div>
         </div>
     </div>
@@ -47,9 +43,14 @@
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
           var question = resp[i];
-          data+='<tr><td>'+responseData.question+'</td><td>'+responseData.category+'</td><td>'+responseData.difficulty+'<input id='+data.question+' type="checkbox" onclick="addQuestion(this);" /></td></tr>';
+          data+='<tr><td>'+responseData.question+
+                '</td><td>'+responseData.category+
+                '</td><td>'+responseData.difficulty+
+                '</td><td><input type="text" id="pointValue" placeholder="point value">'+
+                '</td><td><input id='+data.question+' type="checkbox" name="cb">'+
+                '</td></tr>';
         }
-        document.getElementById('selectQuestions').innerHTML = data;
+        document.getElementById('questionBank').innerHTML = data;
     }
   }
   request.send(params);

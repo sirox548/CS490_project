@@ -92,17 +92,53 @@ function submitNewQuestion(){
 	request.send(questionData);
 }
 
-//adds question to an exam that is being created
-function addQuestion() {
-
-}
 
 //creates a new exam
 function createExam(){
-	var examQuestions=getSelectedQuestions();
-	var points=getPointValues();
-	var examName=document.getElementById('testName').value;
+	var request;
+	try {
+		request = new XMLHttpRequest();
+	}
+	catch{
+		request = new ActiveXObject("Microsoft.XMLHTTP");
+	}
 
-	//then send the request
+	request.onreadystatechange = function () {
+
+		if (request.readyState === 4 && request.status == 200) {
+			var responseData = JSON.parse(request.responseText);
+			var output = "";
+
+			if (responseData.database == "success") {
+				output += "<center><h2><font color='green'>" + responseData.database + "</font></h2></center>";
+			}
+			else {
+				output += "<center><h2><font color='red'> Something went wrong </font></h2></center>";
+			}
+
+			output += "<br>";
+			document.getElementById("response").innerHTML = output;
+		}
+	}
+	
+	var examQuestions = getSelectedQuestions();
+	var examName = document.getElementById('testName').value;
+
+	examData="postType=createExam" + "&examName=" + examName + "&examQuestions=" + examQuestions;
+
+	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	request.send(examData);
+}
+
+function getSelectedQuestions(){
+	var selected = document.querySelectorAll('input[name=cb]:checked');
+	var examQuestions = "";
+
+	for (var i = 0; i < selected.length; i++){
+		examQuestions += selected[i].value + ',';
+	}
+
+	return examQuestions;
 }
 
