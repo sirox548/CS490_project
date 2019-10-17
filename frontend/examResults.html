@@ -30,7 +30,7 @@
   window.onload = function() {
     var data = "<th>Student Name</th><th>Exam Name</th><th>Score</th>"
     var request = new XMLHttpRequest();
-    var params = "postType=studentScores";
+    var params = "postType=scores";
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
