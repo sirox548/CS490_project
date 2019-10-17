@@ -1,0 +1,53 @@
+<script src="testSystem.js" type="text/JavaScript"></script>
+<style>    
+    .leftside, .rightside {
+        height:100vh;
+        width:100%
+    }
+    .leftside{
+        background:grey
+    }
+</style>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <a href="/~anm52/CS490/home.html">Home</a>
+    <h2>Exam Results</h2>
+
+    <div class="row">
+        <div class="col">
+            <div class="leftside">
+                    <br>
+                    <div id="scores"></div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+  window.onload = function() {
+    var data = "<th>Student Name</th><th>Exam Name</th><th>Score</th>"
+    var request = new XMLHttpRequest();
+    var params = "postType=studentScores";
+    request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+    request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    request.onreadystatechange = function() {
+      if (request.readyState === 4 && request.status == 200) {
+        var responseData = JSON.parse(request.responseText);
+        for (i = 0; i<responseData.length; i++){
+          var question = resp[i];
+          data+='<tr><td>'+responseData.studentName+
+                '</td><td>'+responseData.examName+
+                '</td><td>'+responseData.score+
+                '</td></tr>';
+        }
+        document.getElementById('scores').innerHTML = data;
+    }
+  }
+  request.send(params);
+}
+</script>
+
+</body>

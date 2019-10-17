@@ -41,6 +41,9 @@
 	elseif ($postType == "createExam") {
 		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'examQuestions' => $examQuestions);
 	}
+	elseif ($postType == "scores") {
+		$stringdata =  array('postType'=> $postType);
+	}
 
 	
 	$infoback = curl_init();
