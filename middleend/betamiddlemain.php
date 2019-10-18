@@ -1,10 +1,28 @@
 <?php
 $username=$_POST['ucid'];
 $password=$_POST['pwd'];
-
+$question=$_POST['question'];
+$funcName=$_POST['funcName'];
+$params=$_PSOT['params'];
+$input=$_POST['input'];
+$output=$_POST['output'];
+$difficulty=$_POST['difficulty'];
+$category=$_POST['category'];
+$examName=$_POST['examName'];
+$examQuestions=$_POST['examQuestions'];
 
   $stringdata =  array('username'=> $username,
-                       'password'=> $password);
+					   'password'=> $password,
+					   'question'=> $question,
+					   'funcName'=> $funcName,
+					   'params'=> $params,
+					   'input'=> $input,
+					   'output'=> $output,
+					   'difficulty'=> $difficulty,
+					   'category'=> $category,
+					   'examName'=> $examName,
+					   'examQuestions'=> $examQuestions
+					    );
                        
 	$infoback = curl_init();
  	curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
