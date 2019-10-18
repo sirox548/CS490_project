@@ -1,17 +1,6 @@
 <script src="testSystem.js" type="text/JavaScript"></script>
-<style>    
-    .leftside, .rightside {
-        height:100vh;
-        width:100%
-    }
-    .leftside{
-        background:grey;
-        padding-left: 10%;
-        padding-top: 10%
-    }
-</style>
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -27,14 +16,14 @@
             Function Name:<br>
             <input type="text" id="funcName">
             <br><br>
-            Parameters:<br>
-            <input type="text" id="params">
+            Parameter(s):<br>
+            <input type="text" id="params" placeholder="parameter 1, parameter 2...">
             <br><br>
-            Test Case Input:<br>
-            <input type="text" id="input">
+            Test Case Input(s):<br>
+            <input type="text" id="input" placeholder="input 1, input 2...">
             <br><br>
-            Expected Output:<br>
-            <input type="text" id="output">
+            Expected Output(s):<br>
+            <input type="text" id="output" placeholder="output 1, output 2...">
             <br><br>
             Difficulty:<br>
             <select id="difficulty">
