@@ -50,7 +50,7 @@ $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($infoback, CURLOPT_POST, 1);
 curl_setopt($infoback, CURLOPT_POSTFIELDS, http_build_query($stringdata));
-curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~rjb57/CS490/betabackenddata.php");
+curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~rjb57/CS490/betabackendGIT.php");
 $stringrcvd = curl_exec($infoback);
 curl_close ($infoback);
 return $stringrcvd;
@@ -69,7 +69,7 @@ for($i; $i < $howmanyquestions; $i++)
       curl_setopt($questionback, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($questionback, CURLOPT_POST, 1);
       curl_setopt($questionback, CURLOPT_POSTFIELDS, http_build_query($stringdata1));
-      curl_setopt($questionback, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackenddata.php");
+      curl_setopt($questionback, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackendGIT.php");
       $stringquestionback = curl_exec($questionback); 
       curl_close($questionback);
       $questionbackarray[$i] = $stringquestionback;
@@ -110,7 +110,7 @@ for($j; $j < $howmanyquestions1; $j++)
           curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
           curl_setopt($questionback2, CURLOPT_POST, 1);
           curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
-          curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackenddata.php");  
+          curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackendGIT.php");  
           $stringquestionback2 = curl_exec($questionback2);  
           curl_close($questionback2);
         }
@@ -123,7 +123,7 @@ if($postType == 'gradingexam')
     curl_setopt($sendgrade, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($sendgrade, CURLOPT_POST, 1);
     curl_setopt($sendgrade, CURLOPT_POSTFIELDS, http_build_query($stringdata3));
-    curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackenddata.php");
+    curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackendGIT.php");
     $stringsendgrade = curl_exec($sendgrade);
     curl_close($sendgrade);
   }
