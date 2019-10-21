@@ -48,7 +48,10 @@
 		//Should return student name, exam name, and score for all saved exam scores
 		$stringdata =  array('postType'=> $postType);
 	}
-
+	elseif ($postType == "exams") {
+		//Should return exam names
+		$stringdata =  array('postType'=> $postType);
+	}
 	
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
