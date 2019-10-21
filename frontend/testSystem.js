@@ -46,7 +46,7 @@ function login() {
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	request.send( "postType=login"+"ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
+	request.send( "postType=login"+"&ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
 }
 
 function submitNewQuestion(){
