@@ -50,7 +50,7 @@
 	function login($user,$pass) {
 		//Function to log into DB
 		
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		$hpwd = hash("sha256", $pass);
 			if (!$con) {
 				die('Could not connect: ' . mysqli_error($con));
@@ -73,7 +73,7 @@
 	
 	function addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category) {
 		//Function to add question to test
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
@@ -94,7 +94,7 @@
 	
 	function questionBank() {
 			//Function to retrieve question bank from DB
-			$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+			$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 			if (!$con) {
 				die('Could not connect: ' . mysqli_error($con));	
 			}
@@ -119,7 +119,7 @@
 	
 	function createExam($examName,$examQuestions) {
 		//Function to add an exam to the DB
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
@@ -133,7 +133,7 @@
 	
 	function scores() {
 		//Function to return all exam scores
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
@@ -146,7 +146,7 @@
 	
 	function exams() {
 		//Function to return exam names
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
@@ -169,7 +169,7 @@
 	
 	function studentScores($ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
-		$con = mysqli_connect("sql.njit.edu","rjb57", "5julL6kuS");
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
