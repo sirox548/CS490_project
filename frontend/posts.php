@@ -12,6 +12,7 @@
 	$category = "none";
 	$examName = "none";
 	$examQuestions = "none";
+	$studentName = "none"
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
@@ -52,11 +53,15 @@
 		//Should return exam names
 		$stringdata =  array('postType'=> $postType);
 	}
+	elseif ($postType == "studentScores") {
+		//Should return examName, examQuestions, questionScore, and overall score for the specified student
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username);
+	}
 	
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($infoback, CURLOPT_POSTFIELDS, http_build_query($stringdata));
-	curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~mo27/CS490/betamiddle.php");
+	curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~mo27/CS490/betamiddlemain.php");
 	curl_setopt($infoback, CURLOPT_COOKIEJAR, realpath($cookie));
 	$stringrcvd = curl_exec($infoback);
 	curl_close ($infoback);
