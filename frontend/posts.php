@@ -12,7 +12,7 @@
 	$category = "none";
 	$examName = "none";
 	$examQuestions = "none";
-	$studentName = "none"
+	$studentName = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
