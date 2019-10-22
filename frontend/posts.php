@@ -11,7 +11,7 @@
 	$difficulty = "none";
 	$category = "none";
 	$examName = "none";
-	$examQuestions = "none";
+	$questions = "none";
 	$studentName = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
@@ -24,14 +24,11 @@
 	if ( isset($_POST['difficulty'])){ $difficulty=$_POST['difficulty'];}
 	if ( isset($_POST['category'])){ $category=$_POST['category'];}
 	if ( isset($_POST['examName'])){ $difficulty=$_POST['examName'];}
-	if ( isset($_POST['examQuestions'])){ $category=$_POST['examQuestions'];}
+	if ( isset($_POST['questions'])){ $category=$_POST['questions'];}
 
 	//post type must be implemented on back and middle 
-	// if ($postType == "login"){
-	// 	$stringdata =  array('postType'=> $postType, 'ucid'=> $username, 'pwd' => $password);
-	// }
 	if ($postType == "login"){
-		$stringdata =  array('ucid'=> $username, 'pwd' => $password);
+		$stringdata =  array('postType'=> $postType, 'ucid'=> $username, 'pwd' => $password);
 	}
 	elseif ($postType == "addQuestion") {
 		//Should add a wustion in the database
@@ -43,7 +40,7 @@
 	}
 	elseif ($postType == "createExam") {
 		//Should save the newly created exam
-		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'examQuestions' => $examQuestions);
+		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'questions' => $questions);
 	}
 	elseif ($postType == "scores") {
 		//Should return student name, exam name, and score for all saved exam scores

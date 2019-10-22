@@ -14,7 +14,7 @@ function login() {
 			var output = "";
 
 			//response data should be changed to teacher/student/not recognized
-			if (responseData.database == "true") {
+			if (responseData.database == true) {
 				if (responseData.role == "instructor") {
 					window.location.href = '/~anm52/CS490/home.html';
 				}
@@ -124,7 +124,7 @@ function createExam(){
 	var examQuestions = getSelectedQuestions();
 	var examName = document.getElementById('testName').value;
 
-	examData="postType=createExam" + "&examName=" + examName + "&examQuestions=" + examQuestions;
+	examData="postType=createExam" + "&examName=" + examName + "&questions=" + examQuestions;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -136,7 +136,7 @@ function getSelectedQuestions(){
 	var examQuestions = "";
 
 	for (var i = 0; i < selected.length; i++){
-		examQuestions += selected[i].value + ',';
+		examQuestions += selected[i].value.questionID + ',';
 	}
 
 	return examQuestions;
