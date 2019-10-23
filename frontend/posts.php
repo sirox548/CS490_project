@@ -14,6 +14,7 @@
 	$questions = "none";
 	$studentName = "none";
 	$pointValues = "none";
+	$responses = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
@@ -27,6 +28,7 @@
 	if ( isset($_POST['examName'])){ $difficulty=$_POST['examName'];}
 	if ( isset($_POST['questions'])){ $category=$_POST['questions'];}
 	if ( isset($_POST['pointValues'])){ $category=$_POST['pointValues'];}
+	if ( isset($_POST['responses'])){ $category=$_POST['responses'];}
 
 	//post type must be implemented on back and middle 
 	if ($postType == "login"){
@@ -55,6 +57,14 @@
 	elseif ($postType == "studentScores") {
 		//Should return examName, examQuestions, questionScore, and overall score for the specified student
 		$stringdata =  array('postType'=> $postType, 'ucid' => $username);
+	}
+	elseif ($postType == "takeExam") {
+		//Should return exam questions for given exam name
+		$stringdata =  array('postType'=> $postType, 'examName' => $examName);
+	}
+	elseif ($postType == "submitExam") {
+		//submits exam that student took
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'responses' => $responses);
 	}
 	
 	$infoback = curl_init();
