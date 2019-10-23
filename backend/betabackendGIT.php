@@ -1,5 +1,5 @@
 <?php
-	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD");
 	if (!$con) {
 		die('Could not connect: ' . mysqli_error($con));	
 	}
@@ -91,7 +91,7 @@
 		$difficulty = mysqli_real_escape_string($con,$difficulty);
 		$category = mysqli_real_escape_string($con,$category);
 		$sql = "INSERT INTO rjb57.CS490_QuestionBank (fullQuestion,funcName,params,input,output,difficulty,category) VALUES ('";
-		$sql = $sql.$question."','".$funcname."','".$params."','".$input."','".$output."','".$difficulty."','".$category."');";
+		$sql = $sql.$question."','$funcname','$params','$input','$output','$difficulty','$category');";
 		mysqli_query($con,$sql);
 		if ($result){
 			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
@@ -129,7 +129,7 @@
 		$examName = mysqli_real_escape_string($con,$examName);
 		$examQuestions = mysqli_real_escape_string($con,$examQuestions);
 		$pointVals = mysqli_real_escape_string($con,$pointVals);
-		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions,pointValues) VALUES ('".$examName."','".$examQuestions."','".$pointVals."');";
+		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions,pointValues) VALUES ('$examName','$examQuestions','$pointVals');";
 		$result = mysqli_query($con,$sql);
 		if ($result){
 			echo json_encode(array('database'=>'success','log'=>"Successfully created '$examName'"));
@@ -156,7 +156,7 @@
 			$result = mysqli_query($con,$sql);
 			$row = mysqli_fetch_assoc($result);
 			$questions = $row['questions'];
-			$sql = "SELECT fullQuestion FROM rjb57.CS490_QuestionBank WHERE questionID in (".$questions.");";
+			$sql = "SELECT fullQuestion FROM rjb57.CS490_QuestionBank WHERE questionID in ($questions);";
 			$result = mysqli_query($con,$sql);
 			while ($row = mysqli_fetch_assoc($result)) {
 				$examQuestions[] = array('examQuestion'=>$row['fullQuestion']);
@@ -184,7 +184,7 @@
 	function studentScores($con,$ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
 		$ucid = mysqli_real_escape_string($con,$ucid);
-		$sql = "SELECT * FROM rjb57.CS490_GradedExams WHERE ucid='".$ucid."';";
+		$sql = "SELECT * FROM rjb57.CS490_GradedExams WHERE ucid='$ucid';";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			while($row = mysqli_fetch_assoc($result)){
