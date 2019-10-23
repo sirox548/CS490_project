@@ -126,7 +126,7 @@ function createExam(){
 	var pointValues = getPointValues();
 	var examName = document.getElementById('testName').value;
 
-	examData="postType=createExam" + "&examName=" + examName + "&questions=" + examQuestions + "&pointValues=" + pointValues;
+	var examData="postType=createExam" + "&examName=" + examName + "&questions=" + examQuestions + "&pointValues=" + pointValues;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
