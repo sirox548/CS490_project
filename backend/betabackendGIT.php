@@ -1,11 +1,17 @@
 <?php
+	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+	if (!$con) {
+		die('Could not connect: ' . mysqli_error($con));	
+	}
+	
+	mysqli_select_db($con,"rjb57");
 	$postType = $_POST["postType"];
 	switch ($postType) {
 		case "login":
 			//Login to database
 			$username = $_POST['ucid'];
 			$password = $_POST['pwd'];
-			login($username, $password);
+			login($con,$username, $password);
 			break;
 		case "addQuestion":
 			//Add question to test
@@ -16,67 +22,68 @@
 			$output = $_POST['output'];
 			$difficulty = $_POST['difficulty'];
 			$category = $_POST['category'];
-			addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category);
+			echo addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category);
 			break;
 		case "questionBank":
 			//Request for Bank
-			echo questionBank();
+			echo questionBank($con);
 			break;
 		case "createExam":
 			//Create an exam
 			$examName = $_POST['examName'];
 			$examQuestions = $_POST['questions'];
-			createExam($examName,$examQuestions);
+			$pointValues = $_POST['pointValues'];
+			echo createExam($con,$examName,$examQuestions,$pointValues);
 			break;
 		case "scores":
 			//Returns student name, exam name, score for saved exam score
-			echo scores();
+			echo scores($con);
 			break;
 		case "exams":
 			//Returns exam names and ids
-			echo exams();
+			echo exams($con);
+			break;
+		case "takeExam":
+			//Returns only the questions of a specified exam
+			$testName = $_POST['examName'];
+			echo takeExam($con,$testName);
 			break;
 		case "studentScores":
 			//Returns all exams that student has taken with score
 			$ucid = $_POST['ucid'];
-			echo studentScores($ucid);
+			echo studentScores($con,$ucid);
+			break;
+		case "submitExam":
+			//Submits completed exam
+			$examName = $_POST['examName'];
+			$ucid = $_POST['ucid'];
+			$answer = $_POST['answer'];
+			echo submitExam($con, $examName, $ucid, $answer);
+			break;
 		default:
-			echo "{\"database\":false,\"error\":\"No postType specified\"}";
+			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
 			break;
 	}
 	
-	function login($user,$pass) {
+	
+	function login($con,$user,$pass) {
 		//Function to log into DB
-		
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 		$hpwd = hash("sha256", $pass);
-			if (!$con) {
-				die('Could not connect: ' . mysqli_error($con));
-			}
-			
-			mysqli_select_db($con,"rjb57");
 			$username = mysqli_real_escape_string($con,$username);
 			$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$user."';";
 			$result = mysqli_query($con,$sql);
 			$rows = mysqli_fetch_array($result);
 			if($rows['password']==$hpwd){
 				$role = $rows['role'];
-				echo "{\"database\":true,\"role\":\"".$role."\"}";
+				echo json_encode(array('database'=>true,'role'=>$role));
 			}
 			else {
-				echo "{\"database\":false}";
+				echo json_encode(array('database'=>false));
 			}
-		mysqli_close($con);
 	}
 	
-	function addQuestion($question,$funcname,$params,$input,$output,$difficulty,$category) {
+	function addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category) {
 		//Function to add question to test
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		
-		mysqli_select_db($con,"rjb57");
 		$question = mysqli_real_escape_string($con,$question);
 		$funcname = mysqli_real_escape_string($con,$funcname);
 		$params = mysqli_real_escape_string($con,$params);
@@ -87,20 +94,21 @@
 		$sql = "INSERT INTO rjb57.CS490_QuestionBank (fullQuestion,funcName,params,input,output,difficulty,category) VALUES ('";
 		$sql = $sql.$question."','".$funcname."','".$params."','".$input."','".$output."','".$difficulty."','".$category."');";
 		mysqli_query($con,$sql);
-		mysqli_close($con);
+		if ($result){
+			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
+		}
 	}
 	
-	function questionBank() {
+	function questionBank($con) {
 			//Function to retrieve question bank from DB
-			$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-			if (!$con) {
-				die('Could not connect: ' . mysqli_error($con));	
-			}
-			
-			mysqli_select_db($con,"rjb57");
 			$sql = "SELECT * FROM rjb57.CS490_QuestionBank;";
 			$result = mysqli_query($con,$sql);
-			mysqli_close($con);
+			while($row = mysqli_fetch_assoc($result)){
+				$graded[] = array('questionID'=>$row['questionID'], 'question'=>$row['fullQuestion'],
+								'difficulty'=>$row['difficulty'], 'category'=>$row['category']);
+			}
+			$graded = json_encode($graded);
+			return $graded;
 			if ($result){
 				$rows = mysqli_fetch_all_alt($result);
 			}
@@ -117,115 +125,72 @@
 			return $bank;
 		}
 	
-	function createExam($examName,$examQuestions) {
+	function createExam($con,$examName,$examQuestions,$pointVals) {
 		//Function to add an exam to the DB
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		
-		mysqli_select_db($con,"rjb57");
-		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions) VALUES ('".$examName."','".$examQuestions."');";
+		$examName = mysqli_real_escape_string($con,$examName);
+		$examQuestions = mysqli_real_escape_string($con,$examQuestions);
+		$pointVals = mysqli_real_escape_string($con,$pointVals);
+		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions,pointValues) VALUES ('".$examName."','".$examQuestions."','".$pointVals."');";
 		//$result = mysqli_query($con,$sql);
 		//if ($result){
-			//echo "{\"database\":\"success\",\"log\":\"Successfully created ".$examName."\"}";
-			echo "{\"sql\":\"".$sql."\"}";
+			echo json_encode(array('database'=>'success','log'=>"Successfully created $examName",'sql'=>$sql));
 		//}
-		mysqli_close($con);
 	}
 	
-	function exams() {
+	function exams($con) {
 		//Function to return exam names
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		mysqli_select_db($con,"rjb57");
 		$sql = "SELECT * FROM rjb57.CS490_Exams;";
 		$result = mysqli_query($con,$sql);
-		mysqli_close($con);
-		if ($result){
-			$rows = mysqli_fetch_all_alt($result);
+		while($row=mysqli_fetch_assoc($result)) {
+			$examJSON[] = array('examName'=>$row['examName'],'questions'=>$row['questions']);
 		}
-		$examJSON = "[";
-		foreach ($rows as $row) {
-			$examJSON = $examJSON."{\"examName\":\"".$row['examName']."\",";
-			$examJSON = $examJSON."\"questions\":\"".$row['questions']."\"}";
-			$examJSON = $examJSON.",";
-		}
-		$examJSON = $examJSON."]";
-		$examJSON = str_replace(",]", "]", $examJSON);
-		return $examJSON;
+		return json_encode($examJSON);
 	}
-	
-	function examQuestions($examName) {
-		//Function to return questions from specified exam		
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		mysqli_select_db($con,"rjb57");
-		$sql = "SELECT * FROM rjb57.CS490_Exams WHERE examName=".$examName.";";
-		$result = mysqli_query($con,$sql);
-		mysqli_close($con);
-		$row = mysqli_fetch_array($result);
-		$questions = $row['questions'];
-		$examQuestions = "[";
-		foreach ($rows as $row) {
-			$examQuestions = $examQuestions."{\"examQuestion\":\"".$row['exam']."\"}";
-			$examQuestions = $examQuestions.",";
-		}
-		$examQuestions = $examQuestions."]";
-		$examQuestions = str_replace(",]", "]", $examQuestions);
-		return $examQuestions;
-	}
-	
-	function scores() {
-			//Function to return all exam scores
-			$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-			if (!$con) {
-				die('Could not connect: ' . mysqli_error($con));	
-			}
-			
-			mysqli_select_db($con,"rjb57");
-			$sql = "SELECT * FROM rjb57.CS49;";
+	function takeExam($con,$examName) {
+			//Function to return questions from specified exam
+			$examName = mysqli_real_escape_string($con,$examName);
+			$sql = "SELECT * FROM rjb57.CS490_Exams WHERE examName='".$examName."';";
 			$result = mysqli_query($con,$sql);
-			mysqli_close($con);
-			if($result){
-				$rows = mysqli_fetch_all_alt($result);
+			$row = mysqli_fetch_assoc($result);
+			$questions = $row['questions'];
+			$sql = "SELECT fullQuestion FROM rjb57.CS490_QuestionBank WHERE questionID in (".$questions.");";
+			$result = mysqli_query($con,$sql);
+			while ($row = mysqli_fetch_assoc($result)) {
+				$examQuestions[] = array('examQuestion'=>$row['fullQuestion']);
 			}
-			$graded = "[";
-			//** Create json array **
-			$graded = $graded."]";
-			$graded = str_replace(",]", "]", $graded);
+			$examQuestions = json_encode($examQuestions);
+			return $examQuestions;
+		}
+	function scores($con) {
+			//Function to return all exam scores
+			$sql = "SELECT * FROM rjb57.CS490_GradedExams;";
+			$result = mysqli_query($con,$sql);
+			while($row = mysqli_fetch_assoc($result)){
+				$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+								'professorComments'=>$row['professorComments']);
+			}
+			$graded = json_encode($graded);
 			return $graded;
 		}
 	
-	function studentScores($ucid) {
+	function studentScores($con,$ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		
-		mysqli_select_db($con,"rjb57");
-		$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$username."';";
+		$ucid = mysqli_real_escape_string($con,$ucid);
+		$sql = "SELECT * FROM rjb57.CS490_GradedExams WHERE ucid='".$ucid."';";
 		$result = mysqli_query($con,$sql);
-		mysqli_close($con);
-		if ($result){
-			$rows = mysqli_fetch_all_alt($result);
+		while($row = mysqli_fetch_assoc($result)){
+			$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+							'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+							'professorComments'=>$row['professorComments']);
 		}
-		$graded = "[";
-		//** Create json array **
-		$graded = $graded."]";
-		$graded = str_replace(",]", "]", $graded);
+		$graded = json_encode($graded);
 		return $graded;
 	}
 	
-	function mysqli_fetch_all_alt($result) {
-		while($row = mysqli_fetch_assoc($result)){
-			$rows[] = $row;
-		}
-		return $rows;
+	function submitExam($con,$examName,$ucid,$answer) {
+		
+		return json_encode(array('database'=>'success','log'=>"Successfully submitted $examName by $ucid"));
 	}
+	mysqli_close($con);
 ?>
