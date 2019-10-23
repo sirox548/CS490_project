@@ -33,13 +33,13 @@
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
-          var question = resp[i];
-          data+='<tr><td>'+responseData.question+
-                '</td><td>'+responseData.questionID+
-                '</td><td>'+responseData.category+
-                '</td><td>'+responseData.difficulty+
-                '</td><td><input type="text" id="pointValue" placeholder="point value">'+
-                '</td><td><input id='+data.question+' type="checkbox" name="cb">'+
+          var resp = responseData[i];
+          data+='<tr><td>'+resp.question+
+                '</td><td>'+resp.questionID+
+                '</td><td>'+resp.category+
+                '</td><td>'+resp.difficulty+
+                '</td><td><input type="text" placeholder="point value" name="points">'+
+                '</td><td><input value='+resp.questionID+' type="checkbox" name="cb">'+
                 '</td></tr>';
         }
         document.getElementById('questionBank').innerHTML = data;

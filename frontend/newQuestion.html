@@ -64,8 +64,8 @@
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
-          var question = resp[i];
-          data+='<tr><td>'+responseData.question+'</td><td>'+responseData.category+'</td><td>'+responseData.difficulty+'</td></tr>';
+          var resp = responseData[i];
+          data+='<tr><td>'+resp.question+'</td><td>'+resp.category+'</td><td>'+resp.difficulty+'</td></tr>';
         }
         document.getElementById('questionBank').innerHTML = data;
     }

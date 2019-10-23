@@ -122,9 +122,10 @@ function createExam(){
 	}
 	
 	var examQuestions = getSelectedQuestions();
+	var pointValues = getPointValues();
 	var examName = document.getElementById('testName').value;
 
-	examData="postType=createExam" + "&examName=" + examName + "&questions=" + examQuestions;
+	examData="postType=createExam" + "&examName=" + examName + "&questions=" + examQuestions + "&pointValues=" + pointValues;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -136,9 +137,29 @@ function getSelectedQuestions(){
 	var examQuestions = "";
 
 	for (var i = 0; i < selected.length; i++){
-		examQuestions += selected[i].value.questionID + ',';
+		if (i<selected.length-1){
+			examQuestions += selected[i].value + ',';
+		}
+		else {
+			examQuestions += selected[i].value;
+		}
+	}
+	return examQuestions;
+}
+
+function getPointValues(){
+	var values = document.querySelectorAll('input[name=points]');
+	var points = "";
+
+	for (var i = 0; i<values.length; i++){
+		if (i<values.length-1){
+			points += values[i].value + ',';
+		}
+		else {
+			points += values[i].value;
+		}
 	}
 
-	return examQuestions;
+	return points;
 }
 

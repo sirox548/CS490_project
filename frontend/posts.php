@@ -13,6 +13,7 @@
 	$examName = "none";
 	$questions = "none";
 	$studentName = "none";
+	$pointValues = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
@@ -25,6 +26,7 @@
 	if ( isset($_POST['category'])){ $category=$_POST['category'];}
 	if ( isset($_POST['examName'])){ $difficulty=$_POST['examName'];}
 	if ( isset($_POST['questions'])){ $category=$_POST['questions'];}
+	if ( isset($_POST['pointValues'])){ $category=$_POST['pointValues'];}
 
 	//post type must be implemented on back and middle 
 	if ($postType == "login"){
@@ -40,7 +42,7 @@
 	}
 	elseif ($postType == "createExam") {
 		//Should save the newly created exam
-		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'questions' => $questions);
+		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'questions' => $questions, 'pointValues' => $pointValues);
 	}
 	elseif ($postType == "scores") {
 		//Should return student name, exam name, and score for all saved exam scores
