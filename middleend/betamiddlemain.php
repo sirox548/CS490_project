@@ -14,7 +14,7 @@ $examName=$_POST['examName'];
 $examQuestions=$_POST['questions'];
 $pointValues=$_POST['pointValues'];
 
-echo $examName." ".$examQuestions." ".$pointValues." ";
+//echo $examName." ".$examQuestions." ".$pointValues." ";
 
 $newQuestions=$_POST['newQuestions'];
 $paramsValues=$_POST['paramsValues'];
@@ -95,9 +95,9 @@ for($j; $j < $howmanyquestions1; $j++)
       $exampoitscalc = $details->{'exampoints'};
       $examnameid = $details->{'examnameid'};
       $validfuncname = $details->{'validfuncnames'};
-  //main grading funciton to be called
+   //main grading funciton to be called
       $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $exampoitscalc, $validfuncname);
-  //end of main function
+   //end of main function
       $gradewithcomment = explode("^", $gradecalc1);
       $gradecomments = $gradewithcomment[0];
       $gradewocomment = $gradewithcomment[1];
