@@ -26,9 +26,9 @@
 	if ( isset($_POST['difficulty'])){ $difficulty=$_POST['difficulty'];}
 	if ( isset($_POST['category'])){ $category=$_POST['category'];}
 	if ( isset($_POST['examName'])){ $difficulty=$_POST['examName'];}
-	if ( isset($_POST['questions'])){ $category=$_POST['questions'];}
-	if ( isset($_POST['pointValues'])){ $category=$_POST['pointValues'];}
-	if ( isset($_POST['responses'])){ $category=$_POST['responses'];}
+	if ( isset($_POST['questions'])){ $questions=$_POST['questions'];}
+	if ( isset($_POST['pointValues'])){ $pointValues=$_POST['pointValues'];}
+	if ( isset($_POST['responses'])){ $responses=$_POST['responses'];}
 
 	//post type must be implemented on back and middle 
 	if ($postType == "login"){
