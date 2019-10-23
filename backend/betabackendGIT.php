@@ -1,6 +1,5 @@
 <?php
 	$postType = $_POST["postType"];
-	
 	switch ($postType) {
 		case "login":
 			//Login to database
@@ -26,26 +25,25 @@
 		case "createExam":
 			//Create an exam
 			$examName = $_POST['examName'];
-			$examQuestions = $_POST['examQuestions'];
+			$examQuestions = $_POST['questions'];
 			createExam($examName,$examQuestions);
 			break;
 		case "scores":
 			//Returns student name, exam name, score for saved exam score
-			scores();
+			echo scores();
 			break;
 		case "exams":
 			//Returns exam names and ids
-			exams();
+			echo exams();
 			break;
 		case "studentScores":
 			//Returns all exams that student has taken with score
 			$ucid = $_POST['ucid'];
-			studentScores($ucid);
+			echo studentScores($ucid);
 		default:
 			echo "{\"database\":false,\"error\":\"No postType specified\"}";
 			break;
 	}
-	
 	
 	function login($user,$pass) {
 		//Function to log into DB
@@ -103,13 +101,15 @@
 			$sql = "SELECT * FROM rjb57.CS490_QuestionBank;";
 			$result = mysqli_query($con,$sql);
 			mysqli_close($con);
-			$rows = mysqli_fetch_all($result);
+			if ($result){
+				$rows = mysqli_fetch_all_alt($result);
+			}
 			$bank = "[";
 			foreach($rows as $row) {
-				$bank = $bank."{\"questionID\":".$row[0].",";
-				$bank = $bank."\"question\":\"".$row[1]."\",";
-				$bank = $bank."\"difficulty\":\"".$row[6]."\",";
-				$bank = $bank."\"category\":\"".$row[7]."\"}";
+				$bank = $bank."{\"questionID\":".$row['questionID'].",";
+				$bank = $bank."\"question\":\"".$row['fullQuestion']."\",";
+				$bank = $bank."\"difficulty\":\"".$row['difficulty']."\",";
+				$bank = $bank."\"category\":\"".$row['category']."\"}";
 				$bank = $bank.",";
 			}
 			$bank = $bank."]";
@@ -126,21 +126,11 @@
 		
 		mysqli_select_db($con,"rjb57");
 		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions) VALUES ('".$examName."','".$examQuestions."');";
-		mysqli_query($con,$sql);
-		
-		mysqli_close($con);
-	}
-	
-	function scores() {
-		//Function to return all exam scores
-		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
-		if (!$con) {
-			die('Could not connect: ' . mysqli_error($con));	
-		}
-		
-		mysqli_select_db($con,"rjb57");
-		$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$username."';";
-		
+		//$result = mysqli_query($con,$sql);
+		//if ($result){
+			//echo "{\"database\":\"success\",\"log\":\"Successfully created ".$examName."\"}";
+			echo "{\"sql\":\"".$sql."\"}";
+		//}
 		mysqli_close($con);
 	}
 	
@@ -150,11 +140,13 @@
 		if (!$con) {
 			die('Could not connect: ' . mysqli_error($con));	
 		}
-		
 		mysqli_select_db($con,"rjb57");
 		$sql = "SELECT * FROM rjb57.CS490_Exams;";
 		$result = mysqli_query($con,$sql);
-		$rows = mysqli_fetch_all($result);
+		mysqli_close($con);
+		if ($result){
+			$rows = mysqli_fetch_all_alt($result);
+		}
 		$examJSON = "[";
 		foreach ($rows as $row) {
 			$examJSON = $examJSON."{\"examName\":\"".$row['examName']."\",";
@@ -164,8 +156,50 @@
 		$examJSON = $examJSON."]";
 		$examJSON = str_replace(",]", "]", $examJSON);
 		return $examJSON;
-		mysqli_close($con);
 	}
+	
+	function examQuestions($examName) {
+		//Function to return questions from specified exam		
+		$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+		if (!$con) {
+			die('Could not connect: ' . mysqli_error($con));	
+		}
+		mysqli_select_db($con,"rjb57");
+		$sql = "SELECT * FROM rjb57.CS490_Exams WHERE examName=".$examName.";";
+		$result = mysqli_query($con,$sql);
+		mysqli_close($con);
+		$row = mysqli_fetch_array($result);
+		$questions = $row['questions'];
+		$examQuestions = "[";
+		foreach ($rows as $row) {
+			$examQuestions = $examQuestions."{\"examQuestion\":\"".$row['exam']."\"}";
+			$examQuestions = $examQuestions.",";
+		}
+		$examQuestions = $examQuestions."]";
+		$examQuestions = str_replace(",]", "]", $examQuestions);
+		return $examQuestions;
+	}
+	
+	function scores() {
+			//Function to return all exam scores
+			$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+			if (!$con) {
+				die('Could not connect: ' . mysqli_error($con));	
+			}
+			
+			mysqli_select_db($con,"rjb57");
+			$sql = "SELECT * FROM rjb57.CS49;";
+			$result = mysqli_query($con,$sql);
+			mysqli_close($con);
+			if($result){
+				$rows = mysqli_fetch_all_alt($result);
+			}
+			$graded = "[";
+			//** Create json array **
+			$graded = $graded."]";
+			$graded = str_replace(",]", "]", $graded);
+			return $graded;
+		}
 	
 	function studentScores($ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
@@ -176,7 +210,22 @@
 		
 		mysqli_select_db($con,"rjb57");
 		$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$username."';";
-		
+		$result = mysqli_query($con,$sql);
 		mysqli_close($con);
+		if ($result){
+			$rows = mysqli_fetch_all_alt($result);
+		}
+		$graded = "[";
+		//** Create json array **
+		$graded = $graded."]";
+		$graded = str_replace(",]", "]", $graded);
+		return $graded;
+	}
+	
+	function mysqli_fetch_all_alt($result) {
+		while($row = mysqli_fetch_assoc($result)){
+			$rows[] = $row;
+		}
+		return $rows;
 	}
 ?>
