@@ -43,8 +43,7 @@ function login() {
 
 	var user = document.getElementById("ucid").value;
 	var pswd = document.getElementById("pass").value;
-
-	global.localStorage.setItem('user', user);
+	window.localStorage.setItem('user', user);
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -167,10 +166,7 @@ function getPointValues(){
 
 function takeExam(values){
 	examName = values.id
-	(function (global){
-		global.localStorage.setItem('examName', examName);
-	}
-	(window));
+	window.localStorage.setItem('examName', examName);
 }
 
 
