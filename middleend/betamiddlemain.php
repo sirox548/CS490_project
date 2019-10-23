@@ -9,8 +9,13 @@ $input=$_POST['input'];
 $output=$_POST['output'];
 $difficulty=$_POST['difficulty'];
 $category=$_POST['category'];
+
 $examName=$_POST['examName'];
-$examQuestions=$_POST['examQuestions'];
+$examQuestions=$_POST['questions'];
+$pointValues=$_POST['pointValues'];
+
+echo $examName." ".$examQuestions." ".$pointValues." ";
+
 $newQuestions=$_POST['newQuestions'];
 $paramsValues=$_POST['paramsValues'];
 $testcase=$_POST['testcase'];
@@ -36,7 +41,8 @@ $stringdata =  array(  'postType'=> $postType,
                        'difficulty'=> $difficulty,
                        'category'=> $category,
                        'examName'=> $examName,
-                       'examQuestions'=> $examQuestions,
+                       'questions'=> $examQuestions,
+                       'pointValues' => $pointValues,
                        'newQuestions'=> $newQuestions,
                        'paramsValues'=> $paramsValues,
                        'testcase'=> $testcase,
