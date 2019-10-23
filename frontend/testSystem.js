@@ -85,7 +85,7 @@ function submitNewQuestion(){
 	var category = document.getElementById("category").value;
 
 	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
-	"&input=" + input + "&output=" + output + + "&difficulty=" + difficulty + "&category=" + category;
+	"&input=" + input + "&output=" + output + "&difficulty=" + difficulty + "&category=" + category;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
