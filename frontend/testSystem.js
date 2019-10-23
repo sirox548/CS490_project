@@ -151,14 +151,19 @@ function getSelectedQuestions(){
 function getPointValues(){
 	var values = document.querySelectorAll('input[name=points]');
 	var points = "";
+	for (var i = 0; i < values.length; i++){
+		if (values[i].value > 0){
+			if (i<values.length-1){
+				points += values[i].value + ',';
+			}
+			else {
+				points += values[i].value;
+			}
+		}
+	}
 
-	for (var i = 0; i<values.length; i++){
-		if (i<values.length-1){
-			points += values[i].value + ',';
-		}
-		else {
-			points += values[i].value;
-		}
+	if ( points.substring(points.length -1 ) == ",") {
+		points = points.substring(0, points.length - 1);
 	}
 
 	return points;

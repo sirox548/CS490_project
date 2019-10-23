@@ -25,7 +25,7 @@
 	if ( isset($_POST['output'])){ $output=$_POST['output'];}
 	if ( isset($_POST['difficulty'])){ $difficulty=$_POST['difficulty'];}
 	if ( isset($_POST['category'])){ $category=$_POST['category'];}
-	if ( isset($_POST['examName'])){ $difficulty=$_POST['examName'];}
+	if ( isset($_POST['examName'])){ $examName=$_POST['examName'];}
 	if ( isset($_POST['questions'])){ $questions=$_POST['questions'];}
 	if ( isset($_POST['pointValues'])){ $pointValues=$_POST['pointValues'];}
 	if ( isset($_POST['responses'])){ $responses=$_POST['responses'];}
