@@ -1,10 +1,10 @@
 <?php
-	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
+	$con = mysqli_connect("sql.njit.edu","rjb57",PASSWORD);
 	if (!$con) {
 		die('Could not connect: ' . mysqli_error($con));	
 	}
-	
 	mysqli_select_db($con,"rjb57");
+	
 	$postType = $_POST["postType"];
 	switch ($postType) {
 		case "login":
@@ -64,7 +64,6 @@
 			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
 			break;
 	}
-	
 	
 	function login($con,$user,$pass) {
 		//Function to log into DB
@@ -131,19 +130,23 @@
 		$examQuestions = mysqli_real_escape_string($con,$examQuestions);
 		$pointVals = mysqli_real_escape_string($con,$pointVals);
 		$sql = "INSERT INTO rjb57.CS490_Exams (examName,questions,pointValues) VALUES ('".$examName."','".$examQuestions."','".$pointVals."');";
-		//$result = mysqli_query($con,$sql);
-		//if ($result){
-			echo json_encode(array('database'=>'success','log'=>"Successfully created $examName",'sql'=>$sql));
-		//}
+		$result = mysqli_query($con,$sql);
+		if ($result){
+			echo json_encode(array('database'=>'success','log'=>"Successfully created '$examName'"));
+		}else{echo json_encode(array('database'=>'failure','log'=>"Failed creating '$examName'",'sql'=>$sql));}
 	}
 	
 	function exams($con) {
 		//Function to return exam names
 		$sql = "SELECT * FROM rjb57.CS490_Exams;";
 		$result = mysqli_query($con,$sql);
-		while($row=mysqli_fetch_assoc($result)) {
-			$examJSON[] = array('examName'=>$row['examName'],'questions'=>$row['questions']);
-		}
+		if(mysqli_num_rows($result)>0){
+			while($row=mysqli_fetch_assoc($result)) {
+				$examJSON[] = array('examName'=>$row['examName'],'questions'=>$row['questions'],'points'=>$row['pointValues']);
+			}
+		}else {
+				$examJSON=[];
+			}
 		return json_encode($examJSON);
 	}
 	function takeExam($con,$examName) {
@@ -165,10 +168,14 @@
 			//Function to return all exam scores
 			$sql = "SELECT * FROM rjb57.CS490_GradedExams;";
 			$result = mysqli_query($con,$sql);
-			while($row = mysqli_fetch_assoc($result)){
-				$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
-								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-								'professorComments'=>$row['professorComments']);
+			if(mysqli_num_rows($result)>0){
+				while($row = mysqli_fetch_assoc($result)){
+					$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+									'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+									'professorComments'=>$row['professorComments']);
+				}
+			}else {
+				$graded=[];
 			}
 			$graded = json_encode($graded);
 			return $graded;
@@ -179,11 +186,15 @@
 		$ucid = mysqli_real_escape_string($con,$ucid);
 		$sql = "SELECT * FROM rjb57.CS490_GradedExams WHERE ucid='".$ucid."';";
 		$result = mysqli_query($con,$sql);
-		while($row = mysqli_fetch_assoc($result)){
-			$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
-							'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-							'professorComments'=>$row['professorComments']);
-		}
+		if(mysqli_num_rows($result)>0){
+			while($row = mysqli_fetch_assoc($result)){
+				$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+								'professorComments'=>$row['professorComments']);
+			}
+		}else {
+				$graded=[];
+			}
 		$graded = json_encode($graded);
 		return $graded;
 	}
