@@ -29,7 +29,7 @@
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
-          data+='<tr><td>'+resp.ucid+'</td><td>'+resp.examName+'</td><td>'+resp.score+'</td></tr><input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="'+resp.examName+'">';
+          data+='<tr><td>'+resp.ucid+'</td><td>'+resp.pointsReceived+'</td></tr><input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="Review Score">';
         }
         document.getElementById('scores').innerHTML = data;
     }
