@@ -73,14 +73,14 @@ function submitExam(){
     for (var i = 0; i < ids.length; i++){
         if (i< ids.length-1){
             var id = ids[i];
-            responses += document.getElementById(id).value + ',';
+            responses += document.getElementById(id).value + '~';
         }
         else{
             responses += document.getElementById(id).value;
         }
     }
 
-	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&responses" + responses;
+	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&answers" + responses;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");

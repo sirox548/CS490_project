@@ -14,7 +14,7 @@
 	$questions = "none";
 	$studentName = "none";
 	$pointValues = "none";
-	$responses = "none";
+	$answers = "none";
 	$revisedScores = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
@@ -29,7 +29,7 @@
 	if ( isset($_POST['examName'])){ $examName=$_POST['examName'];}
 	if ( isset($_POST['questions'])){ $questions=$_POST['questions'];}
 	if ( isset($_POST['pointValues'])){ $pointValues=$_POST['pointValues'];}
-	if ( isset($_POST['responses'])){ $responses=$_POST['responses'];}
+	if ( isset($_POST['answers'])){ $answers=$_POST['answers'];}
 	if ( isset($_POST['revisedScores'])){ $revisedScores=$_POST['revisedScores'];}
 
 	//post type must be implemented on back and middle 
@@ -66,7 +66,7 @@
 	}
 	elseif ($postType == "submitExam") {
 		//submits exam that student took
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'responses' => $responses);
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'answers' => $answers);
 	}
 	elseif ($postType == "reviseScore") {
 		//revises the score that was originally given to student
