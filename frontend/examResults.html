@@ -19,7 +19,7 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Student Name</th><th>Exam Name</th><th>Score</th>";
+    var data = "<th>Student Name</th><th>Grade</th>";
     var request = new XMLHttpRequest();
     var params = "postType=scores";
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
@@ -29,9 +29,9 @@
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
-          data+='<tr><td>'+resp.ucid+
-                '</td><td>'+resp.pointsReceived+
-                '</td><td><input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="Review Score">'+
+          data+='<tr><td>'+resp.question+
+                '</td><td>'+resp.category+
+                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="Review Score">'+
                 '</td></tr>';
         }
 
