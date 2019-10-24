@@ -226,4 +226,56 @@ function reviewScore(values){
 	  request.send(data);
   }
 
+  function submitExam(){
+	var request;
+	try {
+		request = new XMLHttpRequest();
+	}
+	catch{
+		request = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+	request.onreadystatechange = function () {
+
+		if (request.readyState === 4 && request.status == 200) {
+			var responseData = JSON.parse(request.responseText);
+			var output = "";
+			if (responseData.database == "success") {
+				output += "<center><h2><font color='green'>" + responseData.database + "</font></h2></center>";
+			}
+			else {
+				output += "<center><h2><font color='red'> Something went wrong </font></h2></center>";
+			}
+
+			output += "<br>";
+			document.getElementById("response").innerHTML = output;
+		}
+    }
+    
+    
+	var user = localStorage.getItem('user');
+	var examName = localStorage.getItem('examName');
+	var responses = "";
+	var questionIDs = localStorage.getItem('questionIDs');
+	localStorage.removeItem('questionIDs');
+	localStorage.removeItem('examName');
+    
+    var ids = questionIDs.split(',');
+    for (var i = 0; i < ids.length; i++){
+        if (i< ids.length-1){
+            var id = ids[i];
+            responses += document.getElementById(id).value + '~';
+        }
+        else{
+            responses += document.getElementById(id).value;
+        }
+    }
+
+	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&answers" + responses;
+
+	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	request.send(submission);
+}
+
 

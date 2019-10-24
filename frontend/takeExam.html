@@ -6,6 +6,7 @@
 <body>
     <a href="/~anm52/CS490/studentHome.html">Home</a>
     <h2>Take Exam</h2>
+    <div id="response"></div>
 
     <div class="row">
         <div class="col">
@@ -42,49 +43,10 @@
         }
         data += '<input type="button" onclick="submitExam();" value="Submit"></form>';
         document.getElementById('exam').innerHTML = data;
+        localStorage.setItem('questionIDs', questionIDs);
     }
   }
   request.send(params);
-}
-
-function submitExam(){
-	var request;
-	try {
-		request = new XMLHttpRequest();
-	}
-	catch{
-		request = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-
-	request.onreadystatechange = function () {
-
-		if (request.readyState === 4 && request.status == 200) {
-			var responseData = JSON.parse(request.responseText);
-			var output = "";
-		}
-    }
-    
-    
-	var user = localStorage.getItem('user');
-	var examName = localStorage.getItem('examName');
-    var responses = "";
-    
-    var ids = questionIDs.split(',');
-    for (var i = 0; i < ids.length; i++){
-        if (i< ids.length-1){
-            var id = ids[i];
-            responses += document.getElementById(id).value + '~';
-        }
-        else{
-            responses += document.getElementById(id).value;
-        }
-    }
-
-	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&answers" + responses;
-
-	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
-	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-	request.send(submission);
 }
 </script>
 
