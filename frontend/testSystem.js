@@ -43,7 +43,7 @@ function login() {
 
 	var user = document.getElementById("ucid").value;
 	var pswd = document.getElementById("pass").value;
-	window.localStorage.setItem('user', user);
+	window.localStorage.setItem('ucid', user);
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");

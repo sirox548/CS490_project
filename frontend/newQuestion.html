@@ -36,6 +36,7 @@
             <select id="category">
               <option value="conditional">conditional</option>
               <option value="loops">loops</option>
+              <option value="math">math</option>
             </select>
             <br><br>
             <input type="button" onclick="submitNewQuestion();" value="Submit">
@@ -65,7 +66,7 @@
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
-          data+='<tr><td>'+resp.question+'</td><td>'+resp.category+'</td><td>'+resp.difficulty+'</td></tr>';
+          data+='<tr><td>'+resp.question+'</td><td>'+resp.difficulty+'</td><td>'+resp.category+'</td></tr>';
         }
         document.getElementById('questionBank').innerHTML = data;
     }
