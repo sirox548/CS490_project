@@ -1,5 +1,5 @@
 <?php
-	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD");
+	$con = mysqli_connect("sql.njit.edu","rjb57", PASSWORD);
 	if (!$con) {
 		die('Could not connect: ' . mysqli_error($con));	
 	}
@@ -57,8 +57,27 @@
 			//Submits completed exam
 			$examName = $_POST['examName'];
 			$ucid = $_POST['ucid'];
-			$answer = $_POST['answer'];
-			echo submitExam($con, $examName, $ucid, $answer);
+			$answers = $_POST['answers'];
+			echo submitExam($con, $examName, $ucid, $answers);
+			break;
+		case "gradingExam":
+			//Returns fullQuestion,funcName,params with specified questionID
+			$questionID = $_POST['questionID'];
+			$examName = $_POST['examName'];
+			echo gradingExam($con, $questionID,$examName);
+			break;
+		case "storeComment":
+			$examName = $_POST['examName'];
+			$questionID = $_POST['questionID'];
+			$ucid = $_POST['ucid'];
+			$pointsReceived = $_POST['pointsReceived'];
+			$reasons = $_POST['reasons'];
+			storeComment($con, $examName, $questionID, $ucid, $pointsReceived, $reasons);
+			break;
+		case "storeGrade":
+			$grade = $_POST['grade'];
+			$ucid = $_POST['ucid'];
+			storeGrade($con, $grade, $ucid);
 			break;
 		default:
 			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
@@ -156,10 +175,11 @@
 			$result = mysqli_query($con,$sql);
 			$row = mysqli_fetch_assoc($result);
 			$questions = $row['questions'];
-			$sql = "SELECT fullQuestion FROM rjb57.CS490_QuestionBank WHERE questionID in ($questions);";
+			$sql = "SELECT questionID,fullQuestion,funcName,params FROM rjb57.CS490_QuestionBank WHERE questionID in ($questions);";
 			$result = mysqli_query($con,$sql);
 			while ($row = mysqli_fetch_assoc($result)) {
-				$examQuestions[] = array('examQuestion'=>$row['fullQuestion']);
+				$examQuestions[] = array('questionID'=>$row['questionID'],'examQuestion'=>$row['fullQuestion'], 
+										'funcName'=>$row['funcName'], 'params'=>$row['params']);
 			}
 			$examQuestions = json_encode($examQuestions);
 			return $examQuestions;
@@ -193,15 +213,63 @@
 								'professorComments'=>$row['professorComments']);
 			}
 		}else {
-				$graded=[];
+				$graded=json_encode(array('sql'=>$sql));
 			}
 		$graded = json_encode($graded);
 		return $graded;
 	}
 	
 	function submitExam($con,$examName,$ucid,$answer) {
-		
-		return json_encode(array('database'=>'success','log'=>"Successfully submitted $examName by $ucid"));
+		$examName = mysqli_real_escape_string($con,$examName);
+		$ucid = mysqli_real_escape_string($con,$ucid);
+		$answer = mysqli_real_escape_string($con,$answer);
+		$sql = "INSERT INTO rjb57.CS490_CompletedExams (examName,ucid,answer) VALUES ('$examName','$ucid','$answer');";
+		$result = mysqli_query($con,$sql);
+		if($result){
+			return json_encode(array('database'=>'success','log'=>"Successfully submitted $examName by $ucid",'sql'=>$sql));
+		}else {
+			return json_encode(array('database'=>'failure','log'=>"Could not insert exam: $examName taken by $ucid",'sql'=>$sql));
+		}
 	}
+	
+	function gradingExam($con,$questionID,$examName) {
+		$questionID = mysqli_real_escape_string($con,$questionID);
+		$examName = mysqli_real_escape_string($con,$examName);
+		$sql = "SELECT qb.*,e.pointValues,e.examName,ce.completedID FROM CS490_QuestionBank qb INNER JOIN CS490_Exams e ON questionID=questionID INNER JOIN CS490_CompletedExams ce ON e.examName=ce.examName WHERE questionID=$questionID AND e.examName='$examName';";
+		$result = mysqli_query($con,$sql);
+		if(mysqli_num_rows($result)>0){
+			$row = mysqli_fetch_assoc($result);
+			return json_encode(array('question'=>$row['fullQuestion'],
+									'funcName'=>$row['funcName'],
+									'params'=>$row['params'],
+									'input'=>$row['input'],
+									'output'=>$row['output'],
+									'pointValues'=>$row['pointValues'],
+									'examName'=>$row['examName'],
+									'completedID'=>$row['completedID'],
+									'sql'=>$sql));
+		}else {
+			return json_encode(array('sql'=>$sql));
+		}
+	}
+	
+	function storeComment($con,$examName,$questionID,$ucid,$pointsReceived,$reasons) {
+		$examName = mysqli_real_escape_string($con,$examName);
+		$questionID = mysqli_real_escape_string($con,$questionID);
+		$ucid = mysqli_real_escape_string($con,$ucid);
+		$pointsReceived = mysqli_real_escape_string($con,$pointsReceived);
+		$reasons = mysqli_real_escape_string($con,$reasons);
+		$sql = "INSERT INTO rjb57.CS490_GradedExams (examName, questionID, ucid, pointsReceived, reasons) VALUES ";
+		$sql .= "('$examName','$questionID','$ucid','$pointsReceived','$reasons');";
+		mysqli_query($con,$sql);
+	}
+	
+	function storeGrade($con,$grade,$ucid) {
+		$grade = mysqli_real_escape_string($con,$grade);
+		$ucid = mysqli_real_escape_string($con,$ucid);
+		$sql = "UPDATE rjb57.CS490 SET grade='$grade' WHERE username='$ucid';";
+		mysqli_query($con,$sql);
+	}
+	
 	mysqli_close($con);
 ?>

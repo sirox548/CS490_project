@@ -16,18 +16,21 @@ $pointValues=$_POST['pointValues'];
 
 //echo $examName." ".$examQuestions." ".$pointValues." ";
 
+$questionID = $_POST['questionID'];
+$answers = $_POST['answers'];
+
 $newQuestions=$_POST['newQuestions'];
 $paramsValues=$_POST['paramsValues'];
 $testcase=$_POST['testcase'];
 $exampoints=$_POST['exampoints'];
-$studentanswer=$_POST['studentanswer'];
+$studentanswer=$_POST['answers'];
 $questionref=$_POST['questionref'];
 $i=0;
 $j=0;
 $k=0;
 $studentanswer= rawurldecode($studentanswer);
 $gradepointsreceived=$_POST['gradepointsreceived'];
-$answer=$_post['answer'];
+
 $validfuncnames=$_POST['validfuncnames'];
 
 $stringdata =  array(  'postType'=> $postType,
@@ -50,7 +53,7 @@ $stringdata =  array(  'postType'=> $postType,
                        'studentanswer'=> $studentanswer,
                        'questionref'=> $questionref,
                        'gradepointsreceived'=> $gradepointsreceived,
-                       'answer'=> $answer,
+                       'answers'=> $answers,
                        'validfuncnames'=> $validfuncnames );
 $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
@@ -61,78 +64,93 @@ $stringrcvd = curl_exec($infoback);
 curl_close ($infoback);
 echo $stringrcvd;
 
-if(isset($_POST['UCID'],$_POST['examQuestions'],$_POST['studentanswer']))
+/*if(isset($_POST['UCID'],$_POST['examQuestions'],$_POST['studentanswer']))
     { $postType = 'gradingexam';
       $questionnumber = explode(",", $examQuestions);
       $howmanyquestions = count($questionnumber);
-    }
+    }*/
 
-for($i; $i < $howmanyquestions; $i++)
-    { $singlequestion = $questionnumber[$i];
-      $stringdata1 = array('postType'=>$postType,
-                           'questionref'=>$singlequesiton);
-      $questionback = curl_init();
-      curl_setopt($questionback, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($questionback, CURLOPT_POST, 1);
-      curl_setopt($questionback, CURLOPT_POSTFIELDS, http_build_query($stringdata1));
-      curl_setopt($questionback, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
-      $stringquestionback = curl_exec($questionback); 
-      curl_close($questionback);
-      $questionbackarray[$i] = $stringquestionback;
-    } 
-$howmanyquestions1 = count($questionbackarray);
-$studentanswer = explode("~", $studentanswer); 
+if($postType=='submitExam')
+  {
+      $postType = 'gradingExam';
+      $questionNumber = explode(",", $examQuestions);
+      $howmanyquestions = count($questionNumber);
 
-for($j; $j < $howmanyquestions1; $j++)
-    { $parse = $questionbackarray[$j];
-      $details = json_decode($parse);
-      $parameternames = $details->{'paramsValues'};
-      $functionname = $details->{'functions'};
-      $questID = $details->{'questionref'};
-      $testcaseoutputs = $details->{'testcaseoutput'};
-      $case_input = $details->{'testcaseinput'};
-      $answer = $answer[$j];
-      $exampoitscalc = $details->{'exampoints'};
-      $examnameid = $details->{'examnameid'};
-      $validfuncname = $details->{'validfuncnames'};
-   //main grading funciton to be called
-      $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $exampoitscalc, $validfuncname);
-   //end of main function
-      $gradewithcomment = explode("^", $gradecalc1);
-      $gradecomments = $gradewithcomment[0];
-      $gradewocomment = $gradewithcomment[1];
-      $gradeanswer += $gradewithcomment[1]; 
-      $questionref = $questionnumber[$j];
-      $totalpoints += $exampoitscalc;
-   
+      $questionbackarray = [];
+      for($i; $i < $howmanyquestions; $i++)
+          { $singlequestion = $questionNumber[$i];
+            $stringdata1 = array('postType'=>$postType,
+                                  'questionID'=>$singlequesiton,
+                                  'examName'=>$examName);
+            $questionback = curl_init();
+            curl_setopt($questionback, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($questionback, CURLOPT_POST, 1);
+            curl_setopt($questionback, CURLOPT_POSTFIELDS, http_build_query($stringdata1));
+            curl_setopt($questionback, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
+            $stringquestionback = curl_exec($questionback); 
+            curl_close($questionback);
+            $questionbackarray[$i] = $stringquestionback;
+          } 
+      $howmanyquestions1 = count($questionbackarray);
+      $studentanswer = explode("~", $studentanswer);
+      $questionpoints = explode(",", json_decode($questionbackarray[0])->{'pointValues'});
+      
+      
+      
+      for($j; $j < $howmanyquestions1; $j++)
+          { $parse = $questionbackarray[$j];
+            $details = json_decode($parse);
+            $parameternames = $details->{'params'};
+            $functionname = $details->{'funcName'};
+            $questID = $details->{'questionID'};
+            $testcaseoutputs = $details->{'output'};
+            $case_input = $details->{'input'};
+            $answer = $answer[$j];
+            //$exampoitscalc = $details->{'pointValues'};
+            $currentPoints = $questionpoints[$j];
+            $examnameid = $details->{'examName'};
+            $validfuncname = 'for';//$details->{'validfuncnames'};
+            $completedExamID = $details->{'completedID'};
+        //main grading funciton to be called
+            $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $currentPoints, $validfuncname);
+        //end of main function
+            $gradewithcomment = explode("^", $gradecalc1);
+            $gradecomments = $gradewithcomment[0];
+            $gradewocomment = $gradewithcomment[1];
+            $gradeanswer += $gradewithcomment[1]; 
+            $questionref = $questionnumber[$j];
+            $totalpoints += $currentPoints;
+          
+            if($postType == 'gradingexam')
+              { $stringdata2 = array('pointsReceived'=>$gradewocomment, 
+                                      'reasons'=>$gradecomments, 
+                                      'postType'=>'storeComment', 
+                                      'ucid'=>$ucid, 
+                                      'questionID'=>$questionref, 
+                                      'completedExamID'=>$completedExamID);
+                $questionback2 = curl_init();
+                curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($questionback2, CURLOPT_POST, 1);
+                curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
+                curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
+                $stringquestionback2 = curl_exec($questionback2);  
+                curl_close($questionback2);
+              }
+          }
+      //$gradeanswer = round((($gradeanswer/$totalpoints)*100), 0);
+
       if($postType == 'gradingexam')
-        { $stringdata2 = array('gradepointsreceived'=>$gradewocomment, 
-                                'reasons'=>$gradecomments, 
-                                'postType'=>'storeComment', 
-                                'UCID'=>$ucid, 
-                                'questionref'=>$questionref, 
-                                'examnameid'=>$examnameid);
-          $questionback2 = curl_init();
-          curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
-          curl_setopt($questionback2, CURLOPT_POST, 1);
-          curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
-          curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
-          $stringquestionback2 = curl_exec($questionback2);  
-          curl_close($questionback2);
+        { $stringdata3 = array('grade'=>$gradeanswer, 'postType'=>'storeGrade','ucid'=>$ucid);
+          $sendgrade = curl_init();
+          curl_setopt($sendgrade, CURLOPT_RETURNTRANSFER, 1);
+          curl_setopt($sendgrade, CURLOPT_POST, 1);
+          curl_setopt($sendgrade, CURLOPT_POSTFIELDS, http_build_query($stringdata3));
+          curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
+          $stringsendgrade = curl_exec($sendgrade);
+          curl_close($sendgrade);
         }
-    } 
-$gradeanswer = round((($gradeanswer/$totalpoints)*100), 0);
-
-if($postType == 'gradingexam')
-  { $stringdata3 = array('grade'=>$gradeanswer, 'postType'=>'storeGrade','UCID'=>$ucid);
-    $sendgrade = curl_init();
-    curl_setopt($sendgrade, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($sendgrade, CURLOPT_POST, 1);
-    curl_setopt($sendgrade, CURLOPT_POSTFIELDS, http_build_query($stringdata3));
-    curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
-    $stringsendgrade = curl_exec($sendgrade);
-    curl_close($sendgrade);
-  }
+}
+//       gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $exampoitscalc, $validfuncname);
 //function grading exam
 function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout, $studentname, $exampointsvalue, $validfuncnames)
   { $grade = $exampointsvalue;
@@ -151,7 +169,7 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
     else
         {$gradecomments += "Function comments:\n";$grade++;$totalgrade++;}
     if ($studentfunctionname != $funcname)
-        {$gradecomments .= "Wrong Function Name.\n Function Suppose to be $funcname, but student has $studentfunctionname, - 5 points~";
+        {$gradecomments .= "Wrong Function Name.\n Function supposed to be $funcname, but student has $studentfunctionname, - 5 points~";
         $grade-=5;$totalgrade+=5;}
     else
         {$gradecomments .= "Points not deducted for correct function name~";$totalgrade+=5;}
@@ -174,8 +192,9 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
           if(preg_match("/\bfor\b/", $studentresp)){break;}
           else
           {$gradecomments .= "Function Name incorrect. for loop not used, -1 point~"; $grade--; $totalgrade++; break;}
+          break;
         default:
-          echo "There are no valid constrains names ";
+          //echo "There are no valid constrains names ";
       } 
     if (preg_match("/\bprint\b/", $studentresp))
         { $studentresp = preg_replace("/\bprint\b/", "return", $studentresp);
@@ -192,7 +211,7 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
               else
                 { $grade--; $totalgrade++; 
                   $line1 .= $line . ":" . $dividersep;
-                  $gradecomments .= "Wrong, missing collon at the end,-1 point~";
+                  $gradecomments .= "Wrong, missing colon at the end,-1 point~";
                 }
               }
               else { $line1 .= $line . $dividersep;}
@@ -228,5 +247,6 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
     $grade = round($grade, 0);
     $grade = $gradecomments .= $carrot .= $grade;
     return $grade;
-  } 
+  }
+
 ?> 
