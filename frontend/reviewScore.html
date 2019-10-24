@@ -5,13 +5,17 @@
 
 <body>
     <a href="/~anm52/CS490/home.html">Home</a>
-    <h2>Exam Results</h2>
+    <h2>Review Score</h2>
 
     <div class="row">
         <div class="col">
             <div class="leftside">
                     <br>
-                    <div id="scores"></div>
+                    <input type="button" onclick="submitScore();" value="Revise Score">
+                    <div id="response"></div>
+                    <form>
+                        <table id="score"></table>
+                    </form>
             </div>
         </div>
     </div>
@@ -19,9 +23,9 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Student Name</th><th>Exam Name</th><th>Score</th>"
+    var data = "<th>Question</th><th>Score</th><th>Comments</th>"
     var request = new XMLHttpRequest();
-    var params = "postType=scores";
+    var params = "postType=reviewScore"; //add ucid and exam name
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
@@ -29,9 +33,13 @@
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
-          data+='<tr><td>'+resp.ucid+'</td><td>'+resp.examName+'</td><td>'+resp.score+'</td></tr><input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="'+resp.examName+'">';
+          data+='<tr><td>'+resp.question+
+                '</td><td>'+resp.questionScore+
+                '</td><td>'+resp.comments+
+                '</td><td><input type="text" placeholder="points given" name="points">'+
+                '</td></tr>';
         }
-        document.getElementById('scores').innerHTML = data;
+        document.getElementById('score').innerHTML = data;
     }
   }
   request.send(params);

@@ -174,5 +174,20 @@ function takeExam(values){
 	window.localStorage.setItem('examName', examName);
 }
 
+function reviewScore(values){
+	//given ucid and examName should return the exam questions, score for each question, any comments for each question, and total score
+	var ucid = values.id;
+	var examName = values.value;
+
+	window.location.href = '/~anm52/CS490/reviewScore.html';
+
+	//psot type should be student scores
+  
+  }
+
+
+  function submitScore() {
+	  //should save the revised score
+  }
 
 

@@ -30,7 +30,7 @@
         var questionIDs = "";
         for (i = 0; i<responseData.length; i++){
           var question = responseData[i];
-          data += question.question+'<br><textarea type="text" id="'+question.questionID+'" aria-rowspan="20"></textarea><br><br>';
+          data += 'Question: '+question.examQuestion+'<br>Function name: '+question.funcName+'<br>Parameter(s): '+question.params+'<br><textarea type="text" id="'+question.questionID+'" aria-rowspan="20"></textarea><br><br>';
 
           if (i<responseData.length-1){
               questionIDs += question.questionID +",";

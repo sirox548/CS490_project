@@ -56,7 +56,7 @@
 	}
 	elseif ($postType == "studentScores") {
 		//Should return examName, examQuestions, questionScore, and overall score for the specified student
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username);
+		$stringdata =  array('postType'=> $postType, 'examName' => $examName, 'ucid' => $username);
 	}
 	elseif ($postType == "takeExam") {
 		//Should return exam questions for given exam name
