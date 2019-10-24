@@ -150,7 +150,7 @@ if($postType=='submitExam')
           curl_close($sendgrade);
         }
 }
-//       gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $exampoitscalc, $validfuncname);
+//       gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $currentPoints, $validfuncname);
 //function grading exam
 function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout, $studentname, $exampointsvalue, $validfuncnames)
   { $grade = $exampointsvalue;
@@ -220,9 +220,9 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
           $studentresp = $line1;
           echo $studentresp;
         }    
-    $temp = explode("~", $newparams); 
+    $temp = explode(" ", $newparams); 
     $testcasenumber = count($temp);
-    $testcaseout = explode("~", $testcaseout);
+    $testcaseout = explode(" ", $testcaseout);
     $remainingGrade = $exampointsvalue - $totalgrade;
     $testinggradevalue = round(($remainingGrade/$testcasenumber), 0);
 
