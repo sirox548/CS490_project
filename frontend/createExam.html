@@ -24,7 +24,7 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Question</th><th>Difficulty</th><th>Category</th>"
+    var data = "<th>Question</th><th>Category</th><th>Difficulty</th>"
     var request = new XMLHttpRequest();
     var params = "postType=questionBank";
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
@@ -35,7 +35,6 @@
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           data+='<tr><td>'+resp.question+
-                '</td><td>'+resp.questionID+
                 '</td><td>'+resp.category+
                 '</td><td>'+resp.difficulty+
                 '</td><td><input type="text" placeholder="point value" name="points">'+
