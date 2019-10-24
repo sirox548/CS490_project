@@ -263,15 +263,14 @@ function reviewScore(values){
     var ids = questionIDs.split(',');
     for (var i = 0; i < ids.length; i++){
         if (i< ids.length-1){
-            var id = ids[i];
-            responses += document.getElementById(id).value + '~';
+            responses += document.getElementById(ids[i]).value + '~';
         }
         else{
-            responses += document.getElementById(id).value;
+            responses += document.getElementById(ids[i]).value;
         }
     }
 
-	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&questions=" + questionIDs + "&answers=" + responses;
+	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&questions=" + questionIDs + "&answers=" + encodeURIComponent(responses);
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
