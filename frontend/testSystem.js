@@ -253,7 +253,7 @@ function reviewScore(values){
     }
     
     
-	var user = localStorage.getItem('user');
+	var user = localStorage.getItem('ucis');
 	var examName = localStorage.getItem('examName');
 	var responses = "";
 	var questionIDs = localStorage.getItem('questionIDs');
