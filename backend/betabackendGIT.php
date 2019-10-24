@@ -64,15 +64,15 @@
 			//Returns fullQuestion,funcName,params with specified questionID
 			$questionID = $_POST['questionID'];
 			$examName = $_POST['examName'];
-			echo gradingExam($con, $questionID,$examName);
+			echo gradingExam($con,$questionID,$examName);
 			break;
 		case "storeComment":
-			$examName = $_POST['examName'];
+			$completedExamID = $_POST['completedExamID'];
 			$questionID = $_POST['questionID'];
 			$ucid = $_POST['ucid'];
 			$pointsReceived = $_POST['pointsReceived'];
 			$reasons = $_POST['reasons'];
-			storeComment($con, $examName, $questionID, $ucid, $pointsReceived, $reasons);
+			storeComment($con, $completedExamID, $questionID, $ucid, $pointsReceived, $reasons);
 			break;
 		case "storeGrade":
 			$grade = $_POST['grade'];
@@ -252,16 +252,17 @@
 			return json_encode(array('sql'=>$sql));
 		}
 	}
-	
-	function storeComment($con,$examName,$questionID,$ucid,$pointsReceived,$reasons) {
+	//storeComment($con, '1', '1', 'rjb57', '30', 'Fake reasons');
+	function storeComment($con,$completedExamID,$questionID,$ucid,$pointsReceived,$reasons) {
 		$examName = mysqli_real_escape_string($con,$examName);
 		$questionID = mysqli_real_escape_string($con,$questionID);
 		$ucid = mysqli_real_escape_string($con,$ucid);
 		$pointsReceived = mysqli_real_escape_string($con,$pointsReceived);
 		$reasons = mysqli_real_escape_string($con,$reasons);
-		$sql = "INSERT INTO rjb57.CS490_GradedExams (examName, questionID, ucid, pointsReceived, reasons) VALUES ";
-		$sql .= "('$examName','$questionID','$ucid','$pointsReceived','$reasons');";
-		mysqli_query($con,$sql);
+		$sql = "INSERT INTO rjb57.CS490_GradedExams (completedExamID, questionID, ucid, pointsReceived, reasons) VALUES ";
+		$sql .= "('$completedExamID','$questionID','$ucid','$pointsReceived','$reasons');";
+		$result = mysqli_query($con,$sql);
+		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
 	function storeGrade($con,$grade,$ucid) {
