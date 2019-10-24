@@ -14,8 +14,11 @@
 .leftside, .rightside {
     height:100vh;
     width:100%;
+    text-align: center;
+    padding: 10px;
+    font-size: 120%;
 }
 
 .leftside{
-    background:grey;
+    background:gainsboro;
 }
