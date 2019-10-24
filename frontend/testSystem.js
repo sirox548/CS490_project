@@ -271,7 +271,7 @@ function reviewScore(values){
         }
     }
 
-	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&questions" + questionIDs + "&answers" + responses;
+	var submission = "postType=submitExam" + "&ucid=" + user + "&examName=" + examName + "&questions=" + questionIDs + "&answers=" + responses;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
