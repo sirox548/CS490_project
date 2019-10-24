@@ -25,7 +25,10 @@
   window.onload = function() {
     var data = "<th>Question</th><th>Score</th><th>Comments</th>"
     var request = new XMLHttpRequest();
-    var params = "postType=reviewScore"; //add ucid and exam name
+    var ucid = localStorage.getItem('ucid');
+    var examName = localStorage.getItem('examName');
+
+    var params = "postType=reviewScore&examName=" + examName + "&ucid=" + ucid; 
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
@@ -36,7 +39,8 @@
           data+='<tr><td>'+resp.question+
                 '</td><td>'+resp.questionScore+
                 '</td><td>'+resp.comments+
-                '</td><td><input type="text" placeholder="points given" name="points">'+
+                '</td><td><input type="text" placeholder="revised point value" name="points">'+
+                '</td><td><input value='+resp.questionID+' type="checkbox" name="cb">'+
                 '</td></tr>';
         }
         document.getElementById('score').innerHTML = data;

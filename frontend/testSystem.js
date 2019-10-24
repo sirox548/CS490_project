@@ -179,15 +179,51 @@ function reviewScore(values){
 	var ucid = values.id;
 	var examName = values.value;
 
-	window.location.href = '/~anm52/CS490/reviewScore.html';
+	localStorage.setItem('examName', examName);
+	localStorage.setItem('ucid', ucid);
 
-	//psot type should be student scores
-  
+	window.location.href = '/~anm52/CS490/reviewScore.html';
   }
 
 
   function submitScore() {
 	  //should save the revised score
+	  var request;
+	  try {
+		  request = new XMLHttpRequest();
+	  }
+	  catch{
+		  request = new ActiveXObject("Microsoft.XMLHTTP");
+	  }
+  
+	  request.onreadystatechange = function () {
+  
+		  if (request.readyState === 4 && request.status == 200) {
+			  var responseData = JSON.parse(request.responseText);
+			  var output = "";
+  
+			  if (responseData.database == "success") {
+				  output += "<center><h2><font color='green'>" + responseData.database + "</font></h2></center>";
+			  }
+			  else {
+				  output += "<center><h2><font color='red'> Something went wrong </font></h2></center>";
+			  }
+  
+			  output += "<br>";
+			  document.getElementById("response").innerHTML = output;
+		  }
+	  }
+	  
+	  var examQuestions = getSelectedQuestions();
+	  var pointValues = getPointValues();
+	  var examName = localStorage.getItem('examName');
+	  var ucid = localStorage.getItem('ucid'); //get from local storage
+  
+	  var data="postType=revisedScores" + "&ucid=" + ucid + "&examName=" + examName + "&questions=" + examQuestions + "&revisedScores=" + pointValues;
+  
+	  request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+	  request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	  request.send(data);
   }
 
 
