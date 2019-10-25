@@ -277,5 +277,70 @@ function reviewScore(values){
 	request.send(submission);
 }
 
+function search(){
+	var input = document.getElementById("searchInput");
+	var filter = input.value.toUpperCase();
+	var table = document.getElementById("questionBank");
+	var tr = table.getElementsByTagName("tr");
+
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[0];
+		if (td) {
+		  txtValue = td.textContent || td.innerText;
+		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			tr[i].style.display = "";
+		  } else {
+			tr[i].style.display = "none";
+		  }
+		}
+	  }
+}
+
+function filterCategory(){
+	var input = document.getElementById("filterCategory");
+	var filter = input.value.toUpperCase();
+	var table = document.getElementById("questionBank");
+	var tr = table.getElementsByTagName("tr");
+
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[2];
+		if (td) {
+		  txtValue = td.textContent || td.innerText;
+		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			tr[i].style.display = "";
+		  } 
+		  else if (filter == "ALL") {
+			tr[i].style.display = "";
+		  }
+		  else {
+			tr[i].style.display = "none";
+		  }
+		}
+	  }
+}
+
+function filterDifficulty(){
+	var input = document.getElementById("filterDifficulty");
+	var filter = input.value.toUpperCase();
+	var table = document.getElementById("questionBank");
+	var tr = table.getElementsByTagName("tr");
+
+	for (i = 0; i < tr.length; i++) {
+		td = tr[i].getElementsByTagName("td")[1];
+		if (td) {
+		  txtValue = td.textContent || td.innerText;
+		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			tr[i].style.display = "";
+		  } 
+		  else if (filter == "ALL") {
+			tr[i].style.display = "";
+		  }
+		  else {
+			tr[i].style.display = "none";
+		  }
+		}
+	  }
+}
+
 
 

@@ -26,8 +26,21 @@
       
           <div class="col">
             <div class="rightside">
-                <h3>Question Bank</h3>
                 <form>
+                    <select id="filterCategory" onclick="filterCategory()">
+                        <option value="all">category</option>
+                        <option value="conditional">conditional</option>
+                        <option value="loops">loops</option>
+                        <option value="math">math</option>
+                        <option value="math">recursive</option>
+                      </select>
+                      <select id="filterDifficulty" onClick="filterDifficulty()">
+                          <option value="all">difficulty</option>
+                          <option value="easy">easy</option>
+                          <option value="medium">medium</option>
+                          <option value="hard">hard</option>
+                        </select>
+                    <input type="text" id="searchInput" onkeyup="search()" placeholder="Search for keyword...">
                     <table id="questionBank"></table>
                 </form>
             </div>
