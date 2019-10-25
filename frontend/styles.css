@@ -1,4 +1,9 @@
-
+.login{
+  text-align: center;
+  padding: 10%;
+  height: 100%;
+  background: gainsboro;
+}
 .row{
     display:flex;
     flex-wrap:wrap;
@@ -30,7 +35,7 @@
 .header {
     background-color:grey;
     color: white;
-    text-align: center;
+    
     padding: 20px;
     border-bottom: 5px solid white;
     width:100%;
@@ -86,7 +91,7 @@ body {
     color: white;
   }
 
-  input[type=text], select {
+  input[type=text], [type=password], select {
     padding: 12px 20px;
     margin: 8px 0;
 

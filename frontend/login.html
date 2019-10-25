@@ -1,34 +1,27 @@
 <head>
     <meta charset="utf-8">
-	<script src="testSystem.js" type="text/JavaScript"></script>
+    <script src="testSystem.js" type="text/JavaScript"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Login</h1>
-    <div id="login">
+    
+    <div class="login" id="login">
+        <h1>Login</h1>
         <form id="login" method="POST">
-            <table>
-                <tr>
-                    <td>Username:</td>
-                    <td>
-                        <input type="text" name="ucid" id="ucid">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Password:</td>
-                    <td>
-                        <input type="password" name="pass" id="pass">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input type="button" onclick="login();" value="Login">
-                    </td>
-                </tr>
-            </table>
+            <input type="text" name="ucid" id="ucid" placeholder="username"><br>
+            <input type="password" name="pass" id="pass" placeholder="password"><br>
+            <input type="button" onclick="login();" value="Login">
         </form>
     </div>
 
     <div id="response"></div>
 </body>
+
+<script>
+        window.onload = function() {
+            localStorage.clear();
+            window.localStorage.clear();
+      }
+</script>
 
