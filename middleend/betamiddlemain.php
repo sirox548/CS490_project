@@ -23,13 +23,15 @@ $testcase=$_POST['testcase'];
 $exampoints=$_POST['exampoints'];
 $studentanswer=$_POST['answers'];
 $questionref=$_POST['questionref'];
+
+$gradepointsreceived=$_POST['gradepointsreceived'];
+
+$validfuncnames=$_POST['validfuncnames'];
+
 $i=0;
 $j=0;
 $k=0;
 $studentanswer= rawurldecode($studentanswer);
-$gradepointsreceived=$_POST['gradepointsreceived'];
-
-$validfuncnames=$_POST['validfuncnames'];
 
 $stringdata =  array(  'postType'=> $postType,
                        'ucid'=> $username,
@@ -44,14 +46,15 @@ $stringdata =  array(  'postType'=> $postType,
                        'examName'=> $examName,
                        'questions'=> $examQuestions,
                        'pointValues' => $pointValues,
+                       'questionID' => $questionID,
+                       'answers'=> $answers,
                        'newQuestions'=> $newQuestions,
                        'paramsValues'=> $paramsValues,
                        'testcase'=> $testcase,
                        'exampoints'=> $exampoints,
                        'studentanswer'=> $studentanswer,
                        'questionref'=> $questionref,
-                       'gradepointsreceived'=> $gradepointsreceived,
-                       'answers'=> $answers,
+                       'gradepointsreceived'=> $gradepointsreceived,                       
                        'validfuncnames'=> $validfuncnames );
 $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
@@ -99,13 +102,12 @@ if($postType=='submitExam')
       $questionpoints = explode(",", json_decode($questionbackarray[0])->{'pointValues'});
       
       for($j; $j < $howmanyquestions1; $j++)
-          { 
-            $parse = $questionbackarray[$j];
+          { $parse = $questionbackarray[$j];
             $details = json_decode($parse);
             $parameternames = $details->{'params'};
             $functionname = $details->{'funcName'};
             $questID = $questionNumber[$j];
-            $testcaseoutputs = $details->{'output'};
+            $case_output = $details->{'output'};
             $case_input = $details->{'input'};
             $answer = $studentanswer[$j];
             //$exampoitscalc = $details->{'pointValues'};
@@ -114,7 +116,7 @@ if($postType=='submitExam')
             $validfuncname = 'for';//$details->{'validfuncnames'};
             $completedExamID = $details->{'completedID'};
         //main grading funciton to be called    
-            $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $currentPoints, $validfuncname);
+            $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $case_output, $ucid, $currentPoints, $validfuncname);
         //end of main function
             $gradewithcomment = explode("^", $gradecalc1);
             $gradecomments = $gradewithcomment[0];
@@ -123,38 +125,39 @@ if($postType=='submitExam')
             $questionref = $questionnumber[$j];
             $totalpoints += $currentPoints;
           
-             $stringdata2 = array('pointsReceived'=>$gradewocomment, 
-                                      'reasons'=>$gradecomments, 
-                                      'postType'=>'storeComment', 
-                                      'ucid'=>$username, 
-                                      'questionID'=>$questID, 
-                                      'completedExamID'=>$completedExamID);
-                $questionback2 = curl_init();
-                curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($questionback2, CURLOPT_POST, 1);
-                curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
-                curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
-                $stringquestionback2 = curl_exec($questionback2);
-                curl_close($questionback2);
-                
-                //echo $stringquestionback2."\n\n";
+            $stringdata2 = array('postType'=>'storeComment', 
+                                  'reasons'=>$gradecomments, 
+                                  'pointsReceived'=>$gradewocomment,
+                                  'ucid'=>$username, 
+                                  'questionID'=>$questID, 
+                                  'completedExamID'=>$completedExamID);
+            $questionback2 = curl_init();
+            curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($questionback2, CURLOPT_POST, 1);
+            curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
+            curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
+            $stringquestionback2 = curl_exec($questionback2);
+            curl_close($questionback2);    
+            //echo $stringquestionback2."\n\n";
           }
-      //$gradeanswer = round((($gradeanswer/$totalpoints)*100), 0);
+      $gradeanswer = round((($gradeanswer/$totalpoints)*100), 0);
 
-      $stringdata3 = array('grade'=>$gradeanswer, 'postType'=>'storeGrade','ucid'=>$ucid);
-          $sendgrade = curl_init();
-          curl_setopt($sendgrade, CURLOPT_RETURNTRANSFER, 1);
-          curl_setopt($sendgrade, CURLOPT_POST, 1);
-          curl_setopt($sendgrade, CURLOPT_POSTFIELDS, http_build_query($stringdata3));
-          curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
-          $stringsendgrade = curl_exec($sendgrade);
-          curl_close($sendgrade);
-        
+      $stringdata3 = array('postType'=>'storeGrade',
+                           'grade'=>$gradeanswer, 
+                           'ucid'=>$ucid);
+      $sendgrade = curl_init();
+      curl_setopt($sendgrade, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($sendgrade, CURLOPT_POST, 1);
+      curl_setopt($sendgrade, CURLOPT_POSTFIELDS, http_build_query($stringdata3));
+      curl_setopt($sendgrade, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");
+      $stringsendgrade = curl_exec($sendgrade);
+      curl_close($sendgrade);
+      //echo stringsendgrade."\n\n";  
 }
-//       gradingfunc($answer, $functionname, $parameternames, $case_input, $testcaseoutputs, $ucid, $currentPoints, $validfuncname);
+//       gradingfunc($answer, $functionname, $parameternames, $case_input, $case_output, $ucid, $currentPoints, $validfuncname);
 //function grading exam
 function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout, $studentname, $exampointsvalue, $validfuncnames)
-  { $grade = $exampointsvalue;
+  { $grade = $exampointsvalue;   // current points that exam should be worth
     $totalgrade = 0;
     $gradecomments = "";
     $carrot = "^";
@@ -162,18 +165,21 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
     $file = "$studentname.py";
 
   //$studentresp= ltrim($studentresp); //trimming white space from beginning - not sure if this is needed??
-    $divideanswer = preg_split("/\s+|\(|:/", $studentresp);
-    $start = $divideanswer[0]; 
-    $studentfunctionname = $divideanswer[1];
+    $divideanswer = preg_grep("/[a-zA-Z0-9]+(?=\()/", $studentresp); 
+    /*
+    $start = $divideanswer[0];
     if ($start != "start")
         {$gradecomments += "Function not declared at all, -5 points\n";$totalgrade++;}
     else
-        {$gradecomments += "Function comments:\n";$grade++;$totalgrade++;}
+        {$gradecomments += "Function comments:\n";$grade++;$totalgrade++;}*/
+
+    $studentfunctionname = $divideanswer[1];    // not sure if this suppose to be 0 or 1, I think it is 1
+
     if ($studentfunctionname != $funcname)
         {$gradecomments .= "Wrong Function Name.\n Function supposed to be $funcname, but student has $studentfunctionname, - 5 points~";
         $grade-=5;$totalgrade+=5;}
     else
-        {$gradecomments .= "Points not deducted for correct function name~";$totalgrade+=5;}
+        {$gradecomments .= "Student has correct function name~";$totalgrade+=5;}
   
     $divideanswerparams = explode(")", $studentresp); 
     $temp = $divideanswerparams[0]; 
@@ -187,21 +193,26 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
         { $gradecomments .= "Wrong Parameter Names. Parameter Suppose to be $params ,but student has $studentparams, -1 point~";
           $grade--;$totalgrade++;
         } 
-  
-    switch ($validfuncnames) 
+  /*
+    switch ($validfuncnames) // this is constraints check
       { case "for":
           if(preg_match("/\bfor\b/", $studentresp)){break;}
           else
           {$gradecomments .= "Function Name incorrect. for loop not used, -1 point~"; $grade--; $totalgrade++; break;}
           break;
+        case "while":
+          if(preg_match("/\bwhile\b/", $studentresp)){break;}
+          else
+          {$gradecomments .= "Function Name incorrect. while loop not used, -1 point~"; $grade--; $totalgrade++; break;}
+          break;
         default:
           //echo "There are no valid constrains names ";
-      } 
+      } */
     if (preg_match("/\bprint\b/", $studentresp))
         { $studentresp = preg_replace("/\bprint\b/", "return", $studentresp);
           $grade--; $totalgrade++; $gradecomments .= "Wrong return of funciton, -1 point~";
         }  
-    if (preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b/", $studentresp))
+    if (preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b|\belif\b/", $studentresp))
         { $dividersep = "\r\n";
           $line = strtok($studentresp, $dividersep);
           $line1 = "";
@@ -220,6 +231,7 @@ function gradingfunc($studentresp, $funcname, $params, $testcasein, $testcaseout
             }
           $studentresp = $line1;
           $gradecomments .= "Corrected exam: ".$studentresp."~";
+       // echo $studentresp;    //not sure if we need this line, i think we do
         }    
     $temp = explode(" ", $newparams); 
     $testcasenumber = count($temp);
