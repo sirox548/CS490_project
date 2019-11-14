@@ -254,9 +254,9 @@ function gradingfunc($studentresp, $truefuncName, $trueargs, $testcasein, $testc
     
     
     //Run test cases
-    $temp = explode(" ", $testcasein); 
+    $temp = explode(",", $testcasein); 
       $testcasenumber = count($temp);
-      $testcaseout = explode(" ", $testcaseout);
+      $testcaseout = explode(",", $testcaseout);
       //$remainingGrade = $exampointsvalue - $totalgrade;
       $testinggradevalue = round(($grade/$testcasenumber), 0);
 
