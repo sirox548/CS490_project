@@ -59,20 +59,23 @@
 
     <div class="col">
       <div class="rightside">
-          <select id="filterCategory" onclick="filterCategory()">
-              <option value="all">category</option>
+          <select id="filterCategory">
+              <option value="" disabled selected>category</option>
+              <option value="">none</option>
               <option value="conditional">conditional</option>
               <option value="loops">loops</option>
               <option value="math">math</option>
               <option value="math">recursive</option>
             </select>
-            <select id="filterDifficulty" onClick="filterDifficulty()">
-                <option value="all">difficulty</option>
+            <select id="filterDifficulty">
+              <option value="" disabled selected>difficulty</option>
+              <option value="">none</option>
                 <option value="easy">easy</option>
                 <option value="medium">medium</option>
                 <option value="hard">hard</option>
               </select>
-          <input type="text" id="searchInput" onkeyup="search()" placeholder="Search for keyword...">
+          <input type="text" id="searchInput" placeholder="Search for keyword...">
+          <input type="button" onclick="filter();" value="Filter">
           <table id="questionBank"></table>
       </div>
     </div>

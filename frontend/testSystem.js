@@ -277,70 +277,36 @@ function reviewScore(values){
 	request.send(submission);
 }
 
-function search(){
-	var input = document.getElementById("searchInput");
-	var filter = input.value.toUpperCase();
+function filter(){
+	var inputCat = document.getElementById("filterCategory");
+	var filterCat = inputCat.value.toUpperCase();
+
+	var inputDif = document.getElementById("filterDifficulty");
+	var filterDif = inputDif.value.toUpperCase();
+
+	var inputSearch = document.getElementById("searchInput");
+	var filterSearch = inputSearch.value.toUpperCase();
+
 	var table = document.getElementById("questionBank");
 	var tr = table.getElementsByTagName("tr");
 
 	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[0];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			tr[i].style.display = "";
-		  } else {
-			tr[i].style.display = "none";
-		  }
-		}
-	  }
-}
+		tdSearch = tr[i].getElementsByTagName("td")[0];
+		tdDif = tr[i].getElementsByTagName("td")[1];
+		tdCat = tr[i].getElementsByTagName("td")[2];
 
-function filterCategory(){
-	var input = document.getElementById("filterCategory");
-	var filter = input.value.toUpperCase();
-	var table = document.getElementById("questionBank");
-	var tr = table.getElementsByTagName("tr");
+		if (tdSearch || tdDif || tdCat) {
+		  searchVal = tdSearch.textContent || tdSearch.innerText;
+		  difVal = tdDif.textContent || tdDif.innerText;
+		  catVal = tdCat.textContent || tdCat.innerText;
 
-	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[2];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+		  if (searchVal.toUpperCase().indexOf(filterSearch) > -1 && difVal.toUpperCase().indexOf(filterDif) > -1 && catVal.toUpperCase().indexOf(filterCat) > -1) {
 			tr[i].style.display = "";
 		  } 
-		  else if (filter == "ALL") {
-			tr[i].style.display = "";
-		  }
 		  else {
 			tr[i].style.display = "none";
 		  }
 		}
 	  }
 }
-
-function filterDifficulty(){
-	var input = document.getElementById("filterDifficulty");
-	var filter = input.value.toUpperCase();
-	var table = document.getElementById("questionBank");
-	var tr = table.getElementsByTagName("tr");
-
-	for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName("td")[1];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			tr[i].style.display = "";
-		  } 
-		  else if (filter == "ALL") {
-			tr[i].style.display = "";
-		  }
-		  else {
-			tr[i].style.display = "none";
-		  }
-		}
-	  }
-}
-
-
 
