@@ -22,7 +22,11 @@
 			$output = $_POST['output'];
 			$difficulty = $_POST['difficulty'];
 			$category = $_POST['category'];
-			echo addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category);
+			$loopkind = $_POST['looptype'];
+			if($loopkind!="for" && $loopkind!="while"){
+				$loopkind = "";
+			}
+			echo addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category,$loopkind);
 			break;
 		case "questionBank":
 			//Request for Bank
@@ -62,9 +66,9 @@
 			break;
 		case "gradingExam":
 			//Returns fullQuestion,funcName,params with specified questionID
-			$questionID = $_POST['questionID'];
+			$questionId = $_POST['questionID'];
 			$examName = $_POST['examName'];
-			echo gradingExam($con,$questionID,$examName);
+			echo gradingExam($con,$questionId,$examName);
 			break;
 		case "storeComment":
 			$completedExamID = $_POST['completedExamID'];
@@ -100,7 +104,7 @@
 			}
 	}
 	
-	function addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category) {
+	function addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category,$looptype) {
 		//Function to add question to test
 		$question = mysqli_real_escape_string($con,$question);
 		$funcname = mysqli_real_escape_string($con,$funcname);
@@ -109,8 +113,9 @@
 		$output = mysqli_real_escape_string($con,$output);
 		$difficulty = mysqli_real_escape_string($con,$difficulty);
 		$category = mysqli_real_escape_string($con,$category);
-		$sql = "INSERT INTO rjb57.CS490_QuestionBank (fullQuestion,funcName,params,input,output,difficulty,category) VALUES ('";
-		$sql = $sql.$question."','$funcname','$params','$input','$output','$difficulty','$category');";
+		$looptype = mysqli_real_escape_string($con,$looptype);
+		$sql = "INSERT INTO rjb57.CS490_QuestionBank (fullQuestion,funcName,params,input,output,difficulty,category,looptype) VALUES ('";
+		$sql = $sql.$question."','$funcname','$params','$input','$output','$difficulty','$category','$looptype');";
 		mysqli_query($con,$sql);
 		if ($result){
 			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
@@ -136,6 +141,7 @@
 				$bank = $bank."\"question\":\"".$row['fullQuestion']."\",";
 				$bank = $bank."\"difficulty\":\"".$row['difficulty']."\",";
 				$bank = $bank."\"category\":\"".$row['category']."\"}";
+				$bank = $bank."\"looptype\":\"".$row['looptype']."\"}";
 				$bank = $bank.",";
 			}
 			$bank = $bank."]";
@@ -175,24 +181,25 @@
 			$result = mysqli_query($con,$sql);
 			$row = mysqli_fetch_assoc($result);
 			$questions = $row['questions'];
-			$sql = "SELECT questionID,fullQuestion,funcName,params FROM rjb57.CS490_QuestionBank WHERE questionID in ($questions);";
+			$sql = "SELECT qb.questionID,qb.fullQuestion,qb.funcName,qb.params,e.pointValues FROM rjb57.CS490_QuestionBank qb,rjb57.CS490_Exams e WHERE questionID in ($questions)
+			AND examName='$examName';";
 			$result = mysqli_query($con,$sql);
 			while ($row = mysqli_fetch_assoc($result)) {
 				$examQuestions[] = array('questionID'=>$row['questionID'],'examQuestion'=>$row['fullQuestion'], 
-										'funcName'=>$row['funcName'], 'params'=>$row['params']);
+										'funcName'=>$row['funcName'], 'params'=>$row['params'], 'pointValues'=>$row['pointValues']);
 			}
 			$examQuestions = json_encode($examQuestions);
 			return $examQuestions;
 		}
 	function scores($con) {
 			//Function to return all exam scores
-			$sql = "SELECT * FROM rjb57.CS490_GradedExams;";
+			$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID;";
 			$result = mysqli_query($con,$sql);
 			if(mysqli_num_rows($result)>0){
 				while($row = mysqli_fetch_assoc($result)){
 					$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
 									'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-									'professorComments'=>$row['professorComments']);
+									'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
 				}
 			}else {
 				$graded=[];
@@ -204,16 +211,16 @@
 	function studentScores($con,$ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
 		$ucid = mysqli_real_escape_string($con,$ucid);
-		$sql = "SELECT * FROM rjb57.CS490_GradedExams WHERE ucid='$ucid';";
+		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.ucid='$ucid';";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			while($row = mysqli_fetch_assoc($result)){
-				$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
 								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-								'professorComments'=>$row['professorComments']);
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
 			}
 		}else {
-				$graded=json_encode(array('sql'=>$sql));
+				$graded=array('sql'=>$sql);
 			}
 		$graded = json_encode($graded);
 		return $graded;
@@ -247,6 +254,7 @@
 									'pointValues'=>$row['pointValues'],
 									'examName'=>$row['examName'],
 									'completedID'=>$row['completedID'],
+									'looptype'=>$row['looptype'],
 									'sql'=>$sql));
 		}else {
 			return json_encode(array('sql'=>$sql));
@@ -270,6 +278,11 @@
 		$ucid = mysqli_real_escape_string($con,$ucid);
 		$sql = "UPDATE rjb57.CS490 SET grade='$grade' WHERE username='$ucid';";
 		mysqli_query($con,$sql);
+		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
+	}
+	
+	function professorComment($con,$questionId,$completedExamID) {
+		
 	}
 	
 	mysqli_close($con);
