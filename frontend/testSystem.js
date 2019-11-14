@@ -84,9 +84,10 @@ function submitNewQuestion(){
 	var output = document.getElementById("output").value;
 	var difficulty = document.getElementById("difficulty").value;
 	var category = document.getElementById("category").value;
+	var constraint = document.getElementById("constraint")
 
 	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
-	"&input=" + input + "&output=" + output + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + category;
+	"&input=" + input + "&output=" + output + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
