@@ -180,7 +180,7 @@ function reviewScore(values){
 	var ucid = values.id;
 	var examId = values.name;
 
-	localStorage.setItem('completedExamID', examId);
+	localStorage.setItem('gradedID', examId);
 	localStorage.setItem('ucid', ucid);
 
 	window.location.href = '/~anm52/CS490/reviewScore.html';
