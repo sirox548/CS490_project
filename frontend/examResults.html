@@ -41,7 +41,7 @@
           var resp = responseData[i];
           data+='<tr><td>'+resp.ucid+
                 '</td><td>'+resp.pointsReceived+
-                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="Review Score">'+
+                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" name="'+resp.completedExamID+'"value="Review Score">'+
                 '</td></tr>';
         }
 

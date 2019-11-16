@@ -178,9 +178,9 @@ function takeExam(values){
 function reviewScore(values){
 	//given ucid and examName should return the exam questions, score for each question, any comments for each question, and total score
 	var ucid = values.id;
-	var examName = values.value;
+	var examId = values.name;
 
-	localStorage.setItem('examName', examName);
+	localStorage.setItem('completedExamID', examId);
 	localStorage.setItem('ucid', ucid);
 
 	window.location.href = '/~anm52/CS490/reviewScore.html';
