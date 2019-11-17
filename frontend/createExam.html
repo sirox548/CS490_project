@@ -21,6 +21,9 @@
               <input type="text" id="testName" placeholder="Exam name">
               <input type="button" onclick="createExam();" value="Create Exam">
               <div id="response"></div>
+              <table id="selectedExamQuestions">
+                <th>Question</th><th>Category</th><th>Difficulty</th><th>Point Value</th>
+              </table>
           </div>
           </div>
       
@@ -58,19 +61,33 @@
     request.onreadystatechange = function() {
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
+        localStorage.setItem("questionBank", responseData);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           data+='<tr><td>'+resp.question+
                 '</td><td>'+resp.category+
                 '</td><td>'+resp.difficulty+
-                '</td><td><input type="text" placeholder="point value" name="points">'+
-                '</td><td><input value='+resp.questionID+' type="checkbox" name="cb">'+
+                '</td><td><input value='+resp.questionID+' type="checkbox" name="cb" onchange="addQuestion(this)">'+
                 '</td></tr>';
         }
         document.getElementById('questionBank').innerHTML = data;
     }
   }
   request.send(params);
+}
+
+function addQuestion(q){
+  q.style.display = "none";
+  var qEl = q.parentElement.parentElement;
+  var data = "";
+  data+='<tr><td>'+qEl.childNodes[0].innerHTML+
+                '</td><td>'+qEl.childNodes[1].innerHTML+
+                '</td><td>'+qEl.childNodes[2].innerHTML+
+                '</td><td><input type="text" placeholder="point value" name="points" oninput="getTotalPoints()">'+
+                '</td></tr>';
+
+  document.getElementById('selectedExamQuestions').innerHTML += data;
+  
 }
 </script>
 

@@ -149,6 +149,17 @@ function getSelectedQuestions(){
 	return examQuestions;
 }
 
+function getTotalPoints() {
+	var values = document.querySelectorAll('input[name=points]');
+	total = 0;
+	for (var i = 0; i < values.length; i++){
+		total+= Number(values[i].value);
+	}
+	console.log(total);
+	return total;
+	
+}
+
 function getPointValues(){
 	var values = document.querySelectorAll('input[name=points]');
 	var points = "";
