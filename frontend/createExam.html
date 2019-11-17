@@ -29,31 +29,31 @@
       
           <div class="col">
             <div class="rightside">
-                <form>
-                    <select id="filterCategory">
-                        <option value="all">category</option>
-                        <option value="conditional">conditional</option>
-                        <option value="loops">loops</option>
-                        <option value="math">math</option>
-                        <option value="math">recursive</option>
-                      </select>
-                      <select id="filterDifficulty">
-                          <option value="all">difficulty</option>
-                          <option value="easy">easy</option>
-                          <option value="medium">medium</option>
-                          <option value="hard">hard</option>
-                        </select>
-                    <input type="text" id="searchInput" placeholder="Search for keyword...">          
-                    <input type="button" onclick="filter();" value="Filter">
-                    <table id="questionBank"></table>
-                </form>
+                <select id="filterCategory">
+                    <option value="" disabled selected>category</option>
+                    <option value="">none</option>
+                    <option value="conditional">conditional</option>
+                    <option value="loops">loops</option>
+                    <option value="math">math</option>
+                    <option value="math">recursive</option>
+                  </select>
+                  <select id="filterDifficulty">
+                    <option value="" disabled selected>difficulty</option>
+                    <option value="">none</option>
+                      <option value="easy">easy</option>
+                      <option value="medium">medium</option>
+                      <option value="hard">hard</option>
+                    </select>
+                <input type="text" id="searchInput" placeholder="Search for keyword...">
+                <input type="button" onclick="filter();" value="Filter">
+                <table id="questionBank"></table>
             </div>
           </div>
       </div>
 
 <script>
   window.onload = function() {
-    var data = "<th>Question</th><th>Category</th><th>Difficulty</th>"
+    var data = "<th>Question</th><th>Difficulty</th><th>Category</th>"
     var request = new XMLHttpRequest();
     var params = "postType=questionBank";
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
@@ -61,12 +61,11 @@
     request.onreadystatechange = function() {
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
-        localStorage.setItem("questionBank", responseData);
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           data+='<tr><td>'+resp.question+
-                '</td><td>'+resp.category+
                 '</td><td>'+resp.difficulty+
+                '</td><td>'+resp.category+
                 '</td><td><input value='+resp.questionID+' type="checkbox" name="cb" onchange="addQuestion(this)">'+
                 '</td></tr>';
         }
