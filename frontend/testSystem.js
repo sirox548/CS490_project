@@ -155,8 +155,7 @@ function getTotalPoints() {
 	for (var i = 0; i < values.length; i++){
 		total+= Number(values[i].value);
 	}
-	console.log(total);
-	return total;
+	document.getElementById("totalPoints").innerHTML = "Total Points: " + total;
 	
 }
 
@@ -177,8 +176,6 @@ function getPointValues(){
 	if ( points.substring(points.length -1 ) == ",") {
 		points = points.substring(0, points.length - 1);
 	}
-
-	return points;
 }
 
 function takeExam(values){
