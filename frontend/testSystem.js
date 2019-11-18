@@ -16,10 +16,10 @@ function login() {
 			//response data should be changed to teacher/student/not recognized
 			if (responseData.database == true) {
 				if (responseData.role == "instructor") {
-					window.location.href = '/~anm52/CS490/home.html';
+					window.location.href = '/~anm52/CS490/newQuestion.html';
 				}
 				else {
-					window.location.href = '/~anm52/CS490/studentHome.html';
+					window.location.href = '/~anm52/CS490/exams.html';
 				}
 				//output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
 				
