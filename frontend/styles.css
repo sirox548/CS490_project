@@ -84,6 +84,7 @@ body {
   }
   
   tr:nth-child(even){background-color: white}
+  tr:nth-child(odd){background-color:gainsboro}
   
   th {
     background-color:grey;

@@ -17,45 +17,53 @@
 
     <div class="row">
         <div class="col">
-            <div class="leftside">
                     <br>
                     <input type="button" onclick="submitScore();" value="Release Score">
+                    <input type="text" id="profComments" placeholder="professor comments">
                     <div>By clicking "Release Score" you are thus releasing the score to the student.</div>
                     <div id="response"></div>
-                    <form>
-                        <table id="score"></table>
-                    </form>
-            </div>
+                    <div id="score"></div>
         </div>
     </div>
 
 
 <script>
   window.onload = function() {
-    var data = "<th>Question</th><th>Score</th><th>Comments</th>"
     var request = new XMLHttpRequest();
     var ucid = localStorage.getItem('ucid');
-    var examId = localStorage.getItem('gradedID');
+    var examId = localStorage.getItem('completedExamID');
 
     //TODO: need to update reasons, comments, and revisedScore
-    var params = "postType=reviseScore&completedExamID=" + examId + "&ucid=" + ucid; 
-    request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+    var params = "postType=scores"; 
+    request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true);
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
-        for (i = 0; i<responseData.length; i++){
+        var data = "<br>";
+        var questionNumber = 0;
+        for (var i = 0; i<responseData.length; i++){
           var resp = responseData[i];
-          data+='<tr><td>'+resp.question+
-                '</td><td>'+resp.questionScore+
-                '</td><td>'+resp.comments+
-                '</td><td><input type="text" placeholder="revised point value" name="points">'+
-                '</td><td><input value='+resp.questionID+' type="checkbox" name="cb">'+
-                '</td></tr>';
+          if (resp.completedExamID == examId){
+            questionNumber += 1;
+            data += questionNumber + ')'+" Received " +resp.pointsReceived+ " points<br><br>";
+            reasons = resp.reasons.split("~");
+            var tableData = "<table><th>Criteria</th><th>Points</th>";
+            for(var j = 0; j<reasons.length; j++){
+              reason = reasons[j].split('.');
+              if (reason[1] == undefined){
+                reason[1] = "";
+              }
+              tableData += '<tr><td>'+reason[0]+'</td><td>'+reason[1]+'</td></tr>';
+
+            }
+            tableData += "</table><br>"
+            data += tableData;
+          }
         }
-        document.getElementById('score').innerHTML = data;
+        document.getElementById("score").innerHTML = data;
+      }
     }
-  }
   request.send(params);
 }
 </script>
