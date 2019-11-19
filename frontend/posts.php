@@ -16,7 +16,7 @@
 	$pointValues = "none";
 	$answers = "none";
 	$revisedScores = "none";
-	$gradedID = "none";
+	$completedExamID = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
@@ -32,7 +32,7 @@
 	if ( isset($_POST['pointValues'])){ $pointValues=$_POST['pointValues'];}
 	if ( isset($_POST['answers'])){ $answers=$_POST['answers'];}
 	if ( isset($_POST['revisedScores'])){ $revisedScores=$_POST['revisedScores'];}
-	if ( isset($_POST['gradedID'])){ $gradedID=$_POST['gradedID'];}
+	if ( isset($_POST['completedExamID'])){ $gradedID=$_POST['completedExamID'];}
 	if ( isset($_POST['comments'])){ $comments=$_POST['comments'];}
 	if ( isset($_POST['reasons'])){ $reasons=$_POST['reasons'];}
 
@@ -75,10 +75,10 @@
 	}
 	elseif ($postType == "reviseScore") {
 		//revises the score that was originally given to student
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'completedExamID' => $gradedID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'completedExamID' => $completedExamID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
 	}
 
-	
+	 
 	$infoback = curl_init();
 	curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($infoback, CURLOPT_POSTFIELDS, http_build_query($stringdata));
