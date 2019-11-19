@@ -55,10 +55,14 @@
             examName = resp.examName;
             user = resp.ucid;
             score = Number(resp.pointsReceived);
-              
           }
 
         }
+        data+='<tr><td>'+user+
+                '</td><td>'+examName+
+                '</td><td>'+score+
+                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+user+'" name="'+examId+'"value="Review Score">'+
+                '</td></tr>';
 
         document.getElementById('scores').innerHTML = data;
     }
