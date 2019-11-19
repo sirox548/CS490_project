@@ -50,6 +50,10 @@ function login() {
 	request.send( "postType=login"+"&ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
 }
 
+function addTestCase(){
+	var tc = '<br><input type="text" name="input" placeholder="input"> <input type="text" name="output" placeholder="expected output">';
+	document.getElementById('testCases').innerHTML += tc;
+}
 function submitNewQuestion(){
 	var request;
 	try {
@@ -80,14 +84,27 @@ function submitNewQuestion(){
 	var question = document.getElementById("question").value;
 	var funcName = document.getElementById("funcName").value;
 	var params = document.getElementById("params").value;
-	var input = document.getElementById("input").value;
-	var output = document.getElementById("output").value;
+	var input = document.getElementsByName("input");
+	var output = document.getElementsByName("output");
 	var difficulty = document.getElementById("difficulty").value;
 	var category = document.getElementById("category").value;
 	var constraint = document.getElementById("constraint")
 
+	inputValues = "";
+	outputValues = "";
+	for (var i = 0; i < input.length; i++){
+		if ( i == input.length -1){
+			inputValues += input[i].value;
+			outputValues += output[i].value;
+		}
+		else{
+			inputValues += input[i].value + ",";
+			outputValues += output[i].value + ",";
+		}
+	}
+
 	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
-	"&input=" + input + "&output=" + output + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
+	"&input=" + inputValues + "&output=" + outputValues + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");

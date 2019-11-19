@@ -30,11 +30,15 @@
             Parameter(s):<br>
             <input type="text" id="params" placeholder="parameter 1, parameter 2...">
             <br><br>
-            Test Case Input(s):<br>
-            <input type="text" id="input" placeholder="input 1, input 2...">
-            <br><br>
-            Expected Output(s):<br>
-            <input type="text" id="output" placeholder="output 1, output 2...">
+            <div id = "testCases">
+              Test Cases:<br>
+              <input type="text" name="input" placeholder="input">
+              <input type="text" name="output" placeholder="expected output">
+              <input type="button" onclick="addTestCase();" value="+">
+              <input type="text" name="input" placeholder="input">
+              <input type="text" name="output" placeholder="expected output">
+              
+              </div>
             <br><br>
             Difficulty:<br>
             <select id="difficulty">
