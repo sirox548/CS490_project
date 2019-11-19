@@ -103,8 +103,8 @@ function submitNewQuestion(){
 		}
 	}
 
-	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
-	"&input=" + inputValues + "&output=" + outputValues + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
+	var questionData = "postType=addQuestion" + "&question=" + encodeURIComponent(question) + "&funcName=" + encodeURIComponent(funcName) + "&params=" + encodeURIComponent(params) + 
+	"&input=" + encodeURIComponent(inputValues) + "&output=" + encodeURIComponent(outputValues) + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
