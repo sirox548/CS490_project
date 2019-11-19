@@ -75,7 +75,7 @@
 	}
 	elseif ($postType == "reviseScore") {
 		//revises the score that was originally given to student
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'gradedID' => $gradedID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'completedExamID' => $gradedID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
 	}
 
 	
