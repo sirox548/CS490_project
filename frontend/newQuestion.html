@@ -9,7 +9,6 @@
 </div>
 
     <ul>
-        <li><a  href="/~anm52/CS490/home.html">Home</a></li>
         <li><a class="active" href="/~anm52/CS490/newQuestion.html">Add a Question</a></li>
         <li><a href="/~anm52/CS490/createExam.html">Create an Exam</a></li>
         <li><a href="/~anm52/CS490/examResults.html">View Scores</a></li>
@@ -31,11 +30,15 @@
             Parameter(s):<br>
             <input type="text" id="params" placeholder="parameter 1, parameter 2...">
             <br><br>
-            Test Case Input(s):<br>
-            <input type="text" id="input" placeholder="input 1, input 2...">
-            <br><br>
-            Expected Output(s):<br>
-            <input type="text" id="output" placeholder="output 1, output 2...">
+            <div id = "testCases">
+              Test Cases:<br>
+              <input type="text" name="input" placeholder="input">
+              <input type="text" name="output" placeholder="expected output">
+              <input type="button" onclick="addTestCase();" value="+">
+              <input type="text" name="input" placeholder="input">
+              <input type="text" name="output" placeholder="expected output">
+              
+              </div>
             <br><br>
             Difficulty:<br>
             <select id="difficulty">
@@ -46,9 +49,17 @@
             <br><br>
             Category:<br>
             <select id="category">
+              <option value="math">math</option>
+              <option value="loops">loops</option>
+              <option value="conditional">conditional</option>
+              <option value="recursive">recursive</option>
+            </select>
+            <br><br>
+            Constraints:<br>
+            <select id="constraint">
               <option value="for">for</option>
               <option value="while">while</option>
-              <option value="none">none</option>
+              <option value="print">print</option>
             </select>
             <br><br>
             <input type="button" onclick="submitNewQuestion();" value="Submit">

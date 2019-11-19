@@ -8,7 +8,6 @@
     <h2>Review Exam Scores</h2>
 </div>
   <ul>
-    <li><a href="/~anm52/CS490/studentHome.html">Home</a></li>
     <li><a href="/~anm52/CS490/exams.html">Take Exam</a></li>
     <li><a class="active" href="/~anm52/CS490/examResultsStudent.html">Review Scores</a></li>
     <li><a href="/~anm52/CS490/login.html">Log Out</a></li>
@@ -18,7 +17,7 @@
         <div class="col">
             <div class="leftside">
                     <br>
-                    <div id="studentScores"></div>
+                    <table id="studentScores"></table>
             </div>
         </div>
     </div>
@@ -26,7 +25,7 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Exam Name</th><th>Exam Question</th><th>Question Score </th><th>Score</th>"
+    var data = "<th>Exam Name</th><th>Score</th><th>Review Results</th>"
     var request = new XMLHttpRequest();
     var user = localStorage.getItem('ucid');
     var params = "postType=studentScores&ucid="+user;
@@ -36,11 +35,10 @@
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
         for (i = 0; i<responseData.length; i++){
-          var question = resp[i];
-          data+='<tr><td>'+responseData.examName+
-                '</td><td>'+responseData.examQuestions+
-                '</td><td>'+responseData.questionScores+
-                '</td><td>'+responseData.score+
+          var resp = responseData[i];
+          data+='<tr><td>'+resp.examName+
+                '</td><td>'+resp.pointsReceived+
+                '</td><td>'+'<input type="button" onclick="studentReviewScore(this);" id="'+resp.ucid+'" name="'+resp.gradedID+'"value="Review Score">'+
                 '</td></tr>';
         }
         document.getElementById('studentScores').innerHTML = data;

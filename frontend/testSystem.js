@@ -16,10 +16,10 @@ function login() {
 			//response data should be changed to teacher/student/not recognized
 			if (responseData.database == true) {
 				if (responseData.role == "instructor") {
-					window.location.href = '/~anm52/CS490/home.html';
+					window.location.href = '/~anm52/CS490/newQuestion.html';
 				}
 				else {
-					window.location.href = '/~anm52/CS490/studentHome.html';
+					window.location.href = '/~anm52/CS490/exams.html';
 				}
 				//output += "<center><h2><font color='blue'>" + responseData.database + "</font></h2></center>";
 				
@@ -50,6 +50,10 @@ function login() {
 	request.send( "postType=login"+"&ucid="+encodeURIComponent(user)+"&pwd="+encodeURIComponent(pswd));
 }
 
+function addTestCase(){
+	var tc = '<br><input type="text" name="input" placeholder="input"> <input type="text" name="output" placeholder="expected output">';
+	document.getElementById('testCases').innerHTML += tc;
+}
 function submitNewQuestion(){
 	var request;
 	try {
@@ -80,13 +84,27 @@ function submitNewQuestion(){
 	var question = document.getElementById("question").value;
 	var funcName = document.getElementById("funcName").value;
 	var params = document.getElementById("params").value;
-	var input = document.getElementById("input").value;
-	var output = document.getElementById("output").value;
+	var input = document.getElementsByName("input");
+	var output = document.getElementsByName("output");
 	var difficulty = document.getElementById("difficulty").value;
 	var category = document.getElementById("category").value;
+	var constraint = document.getElementById("constraint").value;
+
+	inputValues = "";
+	outputValues = "";
+	for (var i = 0; i < input.length; i++){
+		if ( i == input.length -1){
+			inputValues += input[i].value;
+			outputValues += output[i].value;
+		}
+		else{
+			inputValues += input[i].value + "~";
+			outputValues += output[i].value + "~";
+		}
+	}
 
 	var questionData = "postType=addQuestion" + "&question=" + question + "&funcName=" + funcName + "&params=" + params + 
-	"&input=" + input + "&output=" + output + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + category;
+	"&input=" + inputValues + "&output=" + outputValues + "&difficulty=" + difficulty + "&category=" + category + "&looptype=" + constraint;
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -148,6 +166,16 @@ function getSelectedQuestions(){
 	return examQuestions;
 }
 
+function getTotalPoints() {
+	var values = document.querySelectorAll('input[name=points]');
+	total = 0;
+	for (var i = 0; i < values.length; i++){
+		total+= Number(values[i].value);
+	}
+	document.getElementById("totalPoints").innerHTML = "Total Points: " + total;
+	
+}
+
 function getPointValues(){
 	var values = document.querySelectorAll('input[name=points]');
 	var points = "";
@@ -161,11 +189,6 @@ function getPointValues(){
 			}
 		}
 	}
-
-	if ( points.substring(points.length -1 ) == ",") {
-		points = points.substring(0, points.length - 1);
-	}
-
 	return points;
 }
 
@@ -177,9 +200,9 @@ function takeExam(values){
 function reviewScore(values){
 	//given ucid and examName should return the exam questions, score for each question, any comments for each question, and total score
 	var ucid = values.id;
-	var examName = values.value;
+	var examId = values.name;
 
-	localStorage.setItem('examName', examName);
+	localStorage.setItem('gradedID', examId);
 	localStorage.setItem('ucid', ucid);
 
 	window.location.href = '/~anm52/CS490/reviewScore.html';
@@ -309,4 +332,5 @@ function filter(){
 		}
 	  }
 }
+
 

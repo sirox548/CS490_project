@@ -8,7 +8,6 @@
         <h2>View, Edit, and Release Scores</h2>
     </div>
       <ul>
-        <li><a href="/~anm52/CS490/home.html">Home</a></li>
         <li><a href="/~anm52/CS490/newQuestion.html">Add a Question</a></li>
         <li><a href="/~anm52/CS490/createExam.html">Create an Exam</a></li>
          <li><a class="active" href="/~anm52/CS490/examResults.html">View Scores</a></li>
@@ -29,7 +28,7 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Student Name</th><th>Grade</th><th>Review</th>";
+    var data = "<th>Student Name</th><th>Exam Name</th><th>Grade</th><th>Review</th>";
     var request = new XMLHttpRequest();
     var params = "postType=scores";
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
@@ -40,8 +39,9 @@
         for (i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           data+='<tr><td>'+resp.ucid+
+                '</td><td>'+resp.examName+
                 '</td><td>'+resp.pointsReceived+
-                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" value="Review Score">'+
+                '</td><td>'+'<input type="button" onclick="reviewScore(this);" id="'+resp.ucid+'" name="'+resp.gradedID+'"value="Review Score">'+
                 '</td></tr>';
         }
 
