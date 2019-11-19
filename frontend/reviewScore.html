@@ -54,7 +54,7 @@
               if (reason[1] == undefined){
                 reason[1] = "";
               }
-              tableData += '<tr><td>'+reason[0]+'</td><td>'+reason[1]+'</td></tr>';
+              tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
 
             }
             tableData += "</table><br>"
@@ -65,6 +65,18 @@
       }
     }
   request.send(params);
+}
+
+function submitScore(){
+  var comments = document.getElementById('profComments').value;
+  var reasons = document.getElementsByName('reason');
+  var points = document.getElementsByName('points');
+
+  console.log(comments);
+  console.log(reasons[0].textContent);
+  console.log(points);
+  
+
 }
 </script>
 
