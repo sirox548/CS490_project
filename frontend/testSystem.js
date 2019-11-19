@@ -88,7 +88,7 @@ function submitNewQuestion(){
 	var output = document.getElementsByName("output");
 	var difficulty = document.getElementById("difficulty").value;
 	var category = document.getElementById("category").value;
-	var constraint = document.getElementById("constraint")
+	var constraint = document.getElementById("constraint").value;
 
 	inputValues = "";
 	outputValues = "";
@@ -98,8 +98,8 @@ function submitNewQuestion(){
 			outputValues += output[i].value;
 		}
 		else{
-			inputValues += input[i].value + ",";
-			outputValues += output[i].value + ",";
+			inputValues += input[i].value + "~";
+			outputValues += output[i].value + "~";
 		}
 	}
 
