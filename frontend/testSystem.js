@@ -189,10 +189,7 @@ function getPointValues(){
 			}
 		}
 	}
-
-	if ( points.substring(points.length -1 ) == ",") {
-		points = points.substring(0, points.length - 1);
-	}
+	return points;
 }
 
 function takeExam(values){
