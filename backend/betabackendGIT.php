@@ -23,7 +23,7 @@
 			$difficulty = $_POST['difficulty'];
 			$category = $_POST['category'];
 			$loopkind = $_POST['looptype'];
-			if($loopkind!="for" && $loopkind!="while"){
+			if($loopkind!="for" && $loopkind!="while" && $loopkind!="print"){
 				$loopkind = "";
 			}
 			echo addQuestion($con,$question,$funcname,$params,$input,$output,$difficulty,$category,$loopkind);
@@ -83,6 +83,15 @@
 			$ucid = $_POST['ucid'];
 			storeGrade($con, $grade, $ucid);
 			break;
+		case "reviseScore":
+			$gID = $_POST['gradedID'];
+			echo reviewScore($con, $gID);
+			break;
+		case "revisedScores":
+			$profComments = $_POST['comments'];
+			$newScore = $_POST['revisedScore'];
+			professorComment($con, $gradedID);
+			break;
 		default:
 			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
 			break;
@@ -91,7 +100,7 @@
 	function login($con,$user,$pass) {
 		//Function to log into DB
 		$hpwd = hash("sha256", $pass);
-			$username = mysqli_real_escape_string($con,$username);
+			$user = mysqli_real_escape_string($con,$user);
 			$sql = "SELECT * FROM rjb57.CS490 WHERE username='".$user."';";
 			$result = mysqli_query($con,$sql);
 			$rows = mysqli_fetch_array($result);
@@ -198,8 +207,8 @@
 			if(mysqli_num_rows($result)>0){
 				while($row = mysqli_fetch_assoc($result)){
 					$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
-									'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-									'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+									'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'],
+									'examName'=>$row['examName'],'questionID'=>$row['questionID']);
 				}
 			}else {
 				$graded=[];
@@ -211,7 +220,7 @@
 	function studentScores($con,$ucid) {
 		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
 		$ucid = mysqli_real_escape_string($con,$ucid);
-		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.ucid='$ucid';";
+		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.ucid='$ucid' and ge.released=1;";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			while($row = mysqli_fetch_assoc($result)){
@@ -220,29 +229,32 @@
 								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
 			}
 		}else {
-				$graded=array('sql'=>$sql);
+				$graded=array('log'=>'No values returned.','sql'=>$sql);
 			}
 		$graded = json_encode($graded);
 		return $graded;
 	}
-	
 	function submitExam($con,$examName,$ucid,$answer) {
 		$examName = mysqli_real_escape_string($con,$examName);
 		$ucid = mysqli_real_escape_string($con,$ucid);
 		$answer = mysqli_real_escape_string($con,$answer);
 		$sql = "INSERT INTO rjb57.CS490_CompletedExams (examName,ucid,answer) VALUES ('$examName','$ucid','$answer');";
 		$result = mysqli_query($con,$sql);
+		$getIDSQL = "SELECT MAX(completedID) FROM rjb57.CS490_CompletedExams;";
+		$maxID = mysqli_fetch_assoc(mysqli_query($con,$getIDSQL))['MAX(completedID)'];
 		if($result){
-			return json_encode(array('database'=>'success','log'=>"Successfully submitted $examName by $ucid",'sql'=>$sql));
+			return json_encode(array('database'=>'success','completedID'=>$maxID,'log'=>"Successfully submitted $examName by $ucid",'sql'=>$sql));
 		}else {
-			return json_encode(array('database'=>'failure','log'=>"Could not insert exam: $examName taken by $ucid",'sql'=>$sql));
+			return json_encode(array('database'=>'failure','completedID'=>$maxID,'log'=>"Could not insert exam: $examName taken by $ucid",'sql'=>$sql));
 		}
 	}
 	
 	function gradingExam($con,$questionID,$examName) {
 		$questionID = mysqli_real_escape_string($con,$questionID);
 		$examName = mysqli_real_escape_string($con,$examName);
-		$sql = "SELECT qb.*,e.pointValues,e.examName,ce.completedID FROM CS490_QuestionBank qb INNER JOIN CS490_Exams e ON questionID=questionID INNER JOIN CS490_CompletedExams ce ON e.examName=ce.examName WHERE questionID=$questionID AND e.examName='$examName';";
+		$sql = "SELECT qb.*,e.examName,e.pointValues FROM rjb57.CS490_QuestionBank qb
+		INNER JOIN rjb57.CS490_Exams e ON qb.questionID=qb.questionID
+		WHERE qb.questionID=$questionID and e.examName='$examName';";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			$row = mysqli_fetch_assoc($result);
@@ -252,8 +264,8 @@
 									'input'=>$row['input'],
 									'output'=>$row['output'],
 									'pointValues'=>$row['pointValues'],
-									'examName'=>$row['examName'],
-									'completedID'=>$row['completedID'],
+									//'examName'=>$row['examName'],
+									//'completedID'=>$row['completedID'],
 									'looptype'=>$row['looptype'],
 									'sql'=>$sql));
 		}else {
@@ -281,9 +293,33 @@
 		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
-	function professorComment($con,$questionId,$completedExamID) {
-		
+	function reviewScore($con,$gradedID) {
+		$gradedID = mysqli_real_escape_string($con,$gradedID);
+		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.gradedID=$gradedID;";
+		$result = mysqli_query($con,$sql);
+		if(mysqli_num_rows($result)>0){
+			while($row = mysqli_fetch_assoc($result)){
+				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
+								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+			}
+		}else {
+				$graded=array('error'=>"gradedID:'$gradedID' not specified or not the right format.",'sql'=>$sql);
+			}
+		$graded = json_encode($graded);
+		return $graded;
+	}
+	
+	function professorComment($con,$gradedID,$reasons,$newScore,$profComments) {
+		$gradedID = mysqli_real_escape_string($con,$gradedID);
+		$profComments = mysqli_real_escape_string($con,$profComments);
+		$newScore = mysqli_real_escape_string($con,$newScore);
+		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE gradedID=$gradedID;";
+		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
 	mysqli_close($con);
+	/*$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
+					'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+					'professorComments'=>$row['professorComments'],'examName'=>$row['examName'],'questionID'=>$row['questionID']);*/
 ?>
