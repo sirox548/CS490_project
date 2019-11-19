@@ -71,7 +71,7 @@
 	}
 	elseif ($postType == "submitExam") {
 		//submits exam that student took
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'answers' => $answers);
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'questions' => $questions, 'answers' => $answers);
 	}
 	elseif ($postType == "reviseScore") {
 		//revises the score that was originally given to student
