@@ -17,13 +17,23 @@
 
     <div class="row">
         <div class="col">
+            <div class="leftside">
                     <br>
                     <input type="button" onclick="submitScore();" value="Release Score">
                     <input type="text" id="profComments" placeholder="professor comments">
                     <div>By clicking "Release Score" you are thus releasing the score to the student.</div>
                     <div id="response"></div>
                     <div id="score"></div>
+                  </div>
         </div>
+
+
+    <div class="col">
+        <div class="rightside" style="background:white;">
+            <div id="studentAnswer" style="white-space: pre-wrap; text-align: center"></div>
+        </div>
+      </div>
+
     </div>
 
 
@@ -41,10 +51,15 @@
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
         var data = "<br>";
+        var answers = "<br><br><br><br><br><br><br><br><br><br>";
         var questionNumber = 0;
         for (var i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           if (resp.completedExamID == examId){
+            var ans = resp.answer.split('~');
+            var a = 0;
+            answers += ans[a];
+            a++;
             questionNumber += 1;
             data += questionNumber + ')'+" Received " +resp.pointsReceived+ " points<br><br>";
             reasons = resp.reasons.split("~");
@@ -55,6 +70,7 @@
                 reason[1] = "";
               }
               tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
+              answers += '<br><br>';
 
             }
             tableData += "</table><br>"
@@ -62,6 +78,8 @@
           }
         }
         document.getElementById("score").innerHTML = data;
+        document.getElementById("studentAnswer").innerHTML = answers;
+        console.log(answers);
       }
     }
   request.send(params);
