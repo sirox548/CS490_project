@@ -18,6 +18,8 @@ $questionID = $_POST['questionID'];
 $answers = $_POST['answers'];
 
 $gradedID = $_POST['gradedID'];
+$completedExamID = $_POST['completedExamID'];
+$reasons = $_POST['reasons'];
 
 $newQuestions=$_POST['newQuestions'];
 $paramsValues=$_POST['paramsValues'];
@@ -58,7 +60,9 @@ $stringdata =  array(  'postType'=> $postType,
                        'questionref'=> $questionref,
                        'gradepointsreceived'=> $gradepointsreceived,                       
                        'validfuncnames'=> $validfuncnames,
-                       'gradedID'=>$gradedID );
+                       'gradedID'=>$gradedID,
+                       'completedExamID'=>$completedExamID,
+                       'reasons'=>$reasons);
 $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($infoback, CURLOPT_POST, 1);
@@ -134,8 +138,10 @@ if($postType=='submitExam')
             curl_setopt($questionback2, CURLOPT_POSTFIELDS, http_build_query($stringdata2));
             curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
             $stringquestionback2 = curl_exec($questionback2);
-            curl_close($questionback2);    
+            curl_close($questionback2);
+            echo "\n\n";
             //print_r($stringdata2);
+           // print_r($stringquestionback2);
           }
       $gradeanswer = round((($gradeanswer/$totalpoints)*100), 0);
 
@@ -153,144 +159,168 @@ if($postType=='submitExam')
 }
 //       gradingfunc($answer, $functionname, $parameternames, $case_input, $case_output, $ucid, $currentPoints, $validfuncname);
 //function grading exam
-function gradingfunc($studentresp, $truefuncName, $trueargs, $testcasein, $testcaseout, $studentname, $exampointsvalue, $validfuncnames)
-  { $grade = $exampointsvalue;   // current points that exam should be worth
-    $totalgrade = 0;
-    $gradecomments = "";
-    $carrot = "^";
-    $newparams = $testcasein;
-    $file = "tests/$studentname.py";
-    
-    //print_r(array('response'=>$studentresp,'truefuncname'=>$truefuncName,'trueargs'=>$trueargs,'testcaseIN'=>$testcasein, 'testcaseOUT'=>$testcaseout, 'studentname'=>$studentname, 'exampointsvalue'=>$exampointsvalue, 'validfuncname'=>$validfuncnames));
-    
-    //Check and fix colon at the end of lines when needed
-    if (preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b|\belif\b/", $studentresp))
-        { $dividersep = "\r\n";
-          $line = strtok($studentresp, $dividersep);
-          $line1 = "";
-          while ($line !== false) 
-            { if(preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b|\belif\b/", $line))
-              {if (preg_match('/:$/', $line))
-                {$line1 .= $line . $dividersep;
-                 $gradecomments .= "Not missing a colon at the end of the line. 0 points deducted.~";}
-              else
-                { $grade--;
-                  $line1 .= $line . ":" . $dividersep;
-                  $gradecomments .= "Wrong, missing colon at the end. -1 point~\n";
+  function gradingfunc($studentresp, $truefuncName, $trueargs, $testcasein, $testcaseout, $studentname, $exampointsvalue, $validfuncnames)
+      { $grade = $exampointsvalue;   // current points that exam should be worth
+        $totalgrade = 0;
+        $gradecomments = "";
+        $carrot = "^";
+        $newparams = $testcasein;
+        $file = "tests/$studentname.py";
+        
+        //print_r(array('response'=>$studentresp,'truefuncname'=>$truefuncName,'trueargs'=>$trueargs,'testcaseIN'=>$testcasein, 'testcaseOUT'=>$testcaseout, 'studentname'=>$studentname, 'exampointsvalue'=>$exampointsvalue, 'validfuncname'=>$validfuncnames));
+        
+        //Check and fix colon at the end of lines when needed
+        if (preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b|\belif\b/", $studentresp))
+            { $dividersep = "\r\n";
+              $line = strtok($studentresp, $dividersep);
+              $line1 = "";
+              $correctColon = 3;
+              while ($line !== false) 
+                { if(preg_match("/\bdef\b|\bfor\b|\bif\b|\belse\b|\bwhile\b|\belif\b/", $line))
+                  {if (preg_match('/:$/', $line))
+                    {$line1 .= $line . $dividersep;
+                     //$gradecomments .= "Not missing a colon at the end of the line.3/3~";
+                     //$totalgrade += 3;
+                    }
+                  else
+                    { $grade-=3;
+                      $correctColon -=1;
+                      $line1 .= $line . ":" . $dividersep;
+                      //$gradecomments .= "Missing colon at the end.0/3~";
+                    }
+                  }
+                  else { $line1 .= $line . $dividersep;}
+                  $line = strtok( $dividersep );
                 }
-              }
-              else { $line1 .= $line . $dividersep;}
-              $line = strtok( $dividersep );
+              $studentresp = $line1;
+            if($correctColon<0){$correctColon=0;}
+            $gradecomments .= "Checked colons at the end of each line.$correctColon/3~";
+            $totalgrade += $correctColon;
             }
-          $studentresp = $line1;
-        }
-    
-    //Check and replace the function name
-      $funcpattern = "/[a-zA-Z0-9]+ *(?=\()/";
-      $divideanswer = preg_match($funcpattern, $studentresp,$funcName); 
-      if($divideanswer){
-        $studentfuncName = $funcName[0];
-        if($studentfuncName!=$truefuncName){
-          $gradecomments .= "Incorrect function name. Function is called $studentfuncName instead of $truefuncName. -5 points~";
-          $studentresp = preg_replace($funcpattern, $truefuncName, $studentresp);
-          $grade-=5;
-        }else {
-          $gradecomments .= "Correct function name. 0 points deducted.~";
-        }
-      }else {
-        $gradecomments .= "Incorrect function formatting. -5 points~";
-        $grade-=5;
-      }
-      
-      //Check and replace the arguments
-      $argpattern = "/(?<=\() *\w* *(, *\w)* *(?=\))/";
-      $divideanswer = preg_match($argpattern, $studentresp,$args);
-      $studentargs = str_replace(' ', '', $args[0]);
-      $trueargs = str_replace(" ", '', $trueargs);
-      if($divideanswer){
-        if($studentargs!=$trueargs){
-          $gradecomments .= "Incorrect arguments. -1 point~";
-          $studentresp = preg_replace($argpattern, $trueargs, $studentresp);
-          $grade-=1;
-        }else {
-          $gradecomments .= "Correct arguments. 0 points deducted.~";
-        }
-      }else {
-        $gradecomments .= "Incorrect argument formatting. -1 point~";
-        $grade-=1;
-      }
-      
-    //Check for the constraints constraints
-    switch ($validfuncnames) 
-      { case "for":
-          if(preg_match("/\bfor\b/", $studentresp)){break;}
-          else
-          {$gradecomments .= "Function Name incorrect. for loop not used, -1 point~"; $grade-=1; $totalgrade++; break;}
-          break;
-        case "while":
-          if(preg_match("/\bwhile\b/", $studentresp)){break;}
-          else
-          {$gradecomments .= "While loop not used, -1 point~"; $grade-=1; break;}
-          break;
-        case "print":
-          if(preg_match("/\bprint\b/", $studentresp)){break;}
-          else
-          {$gradecomments .= "Print not used, -1 point~"; $grade-=1; break;}
-          break;
-        default:
-          //echo "There are no valid constrains names ";
-          break;
-      }
-      
-    //Check if student used print instead of return
-    if($validfuncnames!="print"){
-      if (preg_match("/\bprint\b/", $studentresp))
-          { $studentresp = preg_replace("/\bprint\b/", "return", $studentresp);
-            $grade-=1;
-            $gradecomments .= "Used print instead of return. -1 point~";
-      }else {
-        $gradecomments .= "Correctly used return. 0 points deducted.~";
-      }
-    }
-    
-    //Show corrections in the comments
-    if(strlen($gradecomments)>0){
-      $gradecomments .= "Corrected exam: ".$studentresp."~";
-    }
-    
-    
-    //Run test cases
-    $temp = explode(",", $testcasein); 
-      $testcasenumber = count($temp);
-      $testcaseout = explode(",", $testcaseout);
-      //$remainingGrade = $exampointsvalue - $totalgrade;
-      $testinggradevalue = round(($grade/$testcasenumber), 0);
-
-      for($k=0; $k < $testcasenumber; $k++)
-        { $newparams = $temp[$k];
-          $testcaseout1 = $testcaseout[$k];
-          $execPythonScript = $studentresp. "\n" . "print($truefuncName($newparams))";
-          file_put_contents($file, $execPythonScript);
-          $runpython = exec("python $file");
-//          echo "\nEXEC:\n".$execPythonScript."\n\n";
-//          $runpython = rtrim(shell_exec("python -c '$execPythonScript'"));
-          if ($runpython == $testcaseout1)
-            { $gradecomments .= "Test case for $truefuncName($newparams) passed.~";}
-          else{ if($runpython == "")
-                { $grade-=$testinggradevalue;
-                  $gradecomments .= "Testcase failed for:$truefuncName($newparams),\noutput suppose to be: $testcaseout1, where student output has error. - $testinggradevalue point~";}
+        
+        //Check and replace the function name
+          $funcpattern = "/(?<=def )[a-zA-Z0-9]+ *(?=\()/";
+          $divideanswer = preg_match($funcpattern, $studentresp,$funcName); 
+          if($divideanswer){
+            $studentfuncName = $funcName[0];
+            if($studentfuncName!=$truefuncName){
+              $gradecomments .= "Incorrect function name, function is called $studentfuncName instead of $truefuncName.0/5~";
+              $studentresp = preg_replace($funcpattern, $truefuncName, $studentresp);
+              $grade-=5;
+            }else {
+              $gradecomments .= "Correct function name.5/5~";
+              $totalgrade +=5;
+            }
+          }else {
+            $gradecomments .= "Incorrect function formatting.0/5~";
+            $grade-=5;
+          }
+          
+          //Check and replace the arguments
+          $argpattern = "/(?<=\() *\w* *(, *\w)* *(?=\))/";
+          $divideanswer = preg_match($argpattern, $studentresp,$args);
+          $studentargs = str_replace(' ', '', $args[0]);
+          $trueargs = str_replace(" ", '', $trueargs);
+          if($divideanswer){
+            if($studentargs!=$trueargs){
+              $gradecomments .= "Incorrect arguments.0/3~";
+              //$studentresp = preg_replace($argpattern, $trueargs, $studentresp);
+              //$trueargs = $studentargs;
+              $grade-=3;
+            }else {
+              $gradecomments .= "Correct arguments.3/3~";
+              $totalgrade += 3;
+            }
+          }else {
+            $gradecomments .= "Incorrect argument formatting.0/3~";
+            $grade-=3;
+          }
+          
+        //Check for the constraints constraints
+        switch ($validfuncnames) 
+          { case "for":
+              if(preg_match("/\bfor\b/", $studentresp)){break;}
               else
-                { $testinggradevalue = round($testinggradevalue, 0);
-                  $grade-=$testinggradevalue;
-                  $gradecomments .= "Testcase failed for:$truefuncName($newparams),\noutput suppose to be: $testcaseout1, where student output was $runpython. - $testinggradevalue point~";
-                }
-              }
+              {$gradecomments .= "For loop not used.0/3~"; $grade-=3; $totalgrade++; break;}
+              break;
+            case "while":
+              if(preg_match("/\bwhile\b/", $studentresp)){break;}
+              else
+              {$gradecomments .= "While loop not used.0/3~"; $grade-=3; break;}
+              break;
+            case "print":
+              if(preg_match("/\bprint\b/", $studentresp)){break;}
+              else
+              {$gradecomments .= "Print not used.0/3~"; $grade-=3; break;}
+              break;
+            default:
+              $gradecomments .= "No contraints. 3/3~";
+              $totalgrade +=3;
+              break;
+          }
+          
+        //Check if student used print instead of return
+        if($validfuncnames!="print"){
+          if (preg_match("/\bprint\b/", $studentresp))
+              { $studentresp = preg_replace("/\bprint\b/", "return", $studentresp);
+                $grade-=3;
+                $gradecomments .= "Used print instead of return.0/3~";
+          }else {
+            $gradecomments .= "Correctly used return.3/3~";
+            $totalgrade += 3;
+          }
         }
-    
-    $grade = round($grade, 0);
-    if($grade<0){$grade=0;}
-    $grade = $gradecomments .= $carrot .= $grade;
-    return $grade;
-  }
+        
+        //Show corrections in the comments
+        if(strlen($gradecomments)>0){
+          $gradecomments .= "Corrected exam:\n".$studentresp."~";
+        }
+        
+        
+        //Run test cases
+          $temp = explode("~", $testcasein); 
+          $testcasenumber = count($temp);
+          $testcaseout = explode("~", $testcaseout);
+          $remainingGrade = $exampointsvalue - 17;
+          $testinggradevalue = round(($remainingGrade/$testcasenumber),0,PHP_ROUND_HALF_DOWN);
+          $extraPoints = $remainingGrade-($testinggradevalue*$testcasenumber);
+          //if($extraPoints<0){$extraPoints=0;}
+          //$testinggradevalue = round(($grade/$testcasenumber), 0);
+
+          for($k=0; $k < $testcasenumber; $k++)
+            { $newparams = $temp[$k];
+              $testcaseout1 = $testcaseout[$k];
+              if($validfuncname=="print"){
+                $execPythonScript = $studentresp . "\n" . "$truefuncName($newparams)";
+              }else{
+                $execPythonScript = $studentresp. "\n" . "print($truefuncName($newparams))";
+              }
+              file_put_contents($file, $execPythonScript);
+              $runpython = exec("python $file");
+    //          echo "\nEXEC:\n".$execPythonScript."\n\n";
+    //          $runpython = rtrim(shell_exec("python -c '$execPythonScript'"));
+              if ($runpython == $testcaseout1)
+                { $gradecomments .= "Test case for $truefuncName($newparams) passed.$testinggradevalue/$testinggradevalue~";
+                  $totalgrade += $testinggradevalue;}
+              else{ if($runpython == "")
+                    { $grade-=$testinggradevalue;
+                      $gradecomments .= "Testcase failed for: $truefuncName($newparams), \noutput suppose to be: $testcaseout1, where student output has error.0/$testinggradevalue~";}
+                  else
+                    { $testinggradevalue = round($testinggradevalue, 0);
+                      $grade-=$testinggradevalue;
+                      $gradecomments .= "Testcase failed for: $truefuncName($newparams), \noutput suppose to be: $testcaseout1, where student output was $runpython.0/$testinggradevalue~";
+                    }
+                  }
+            }
+        
+        /*$grade = round($grade, 0);
+        if($grade<0){$grade=0;}
+        $grade = $gradecomments .= $carrot .= $grade;
+        return $grade;*/
+        $gradecomments .= "Extra points awarded to student.$extraPoints/$extraPoints";
+        $totalgrade += $extraPoints;
+        $returnGrade = $gradecomments . $carrot . $totalgrade;
+        return $returnGrade;
+      }
 
 ?> 

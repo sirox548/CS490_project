@@ -57,6 +57,11 @@
 			$ucid = $_POST['ucid'];
 			echo studentScores($con,$ucid);
 			break;
+		case "examScores":
+			//Returns exam score results for certain exam
+			$completedID = $_POST['completedExamID'];
+			echo examScores($con, $completedID);
+			break;
 		case "submitExam":
 			//Submits completed exam
 			$examName = $_POST['examName'];
@@ -84,13 +89,15 @@
 			storeGrade($con, $grade, $ucid);
 			break;
 		case "reviseScore":
-			$gID = $_POST['gradedID'];
-			echo reviewScore($con, $gID);
+			$comletedID = $_POST['completedExamID'];
+			echo reviewScore($con, $comletedID);
 			break;
 		case "revisedScores":
 			$profComments = $_POST['comments'];
 			$newScore = $_POST['revisedScore'];
-			professorComment($con, $gradedID);
+			$completedExamID = $_POST['completedExamID'];
+			$reasons = $_POST['reasons'];
+			professorComment($con, $completedExamID, $reasons, $newScore, $profComments);
 			break;
 		default:
 			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
@@ -128,6 +135,8 @@
 		mysqli_query($con,$sql);
 		if ($result){
 			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
+		}else {
+			return json_encode(array('database'=>'failure','log'=>'Something went wrong.','result'=>mysqli_error($con),'sql'=>$sql));
 		}
 	}
 	
@@ -202,13 +211,13 @@
 		}
 	function scores($con) {
 			//Function to return all exam scores
-			$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID;";
+			$sql = "SELECT ge.*,ce.examName,ce.answer FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID;";
 			$result = mysqli_query($con,$sql);
 			if(mysqli_num_rows($result)>0){
 				while($row = mysqli_fetch_assoc($result)){
-					$graded[] = array('gradedID'=>$row['gradedID'], 'completedExamID'=>$row['completedExamID'],
-									'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'],
-									'examName'=>$row['examName'],'questionID'=>$row['questionID']);
+					$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
+									'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+									'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
 				}
 			}else {
 				$graded=[];
@@ -216,16 +225,32 @@
 			$graded = json_encode($graded);
 			return $graded;
 		}
-	
-	function studentScores($con,$ucid) {
-		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
-		$ucid = mysqli_real_escape_string($con,$ucid);
-		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.ucid='$ucid' and ge.released=1;";
+	function examScores($con,$completedID) {
+		//Function to return certain exam exam scores
+		$sql = "SELECT ge.*,ce.examName,ce.answer FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID where completedExamID=$completedID;";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			while($row = mysqli_fetch_assoc($result)){
 				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
-								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+								'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+			}
+		}else {
+			$graded=[];
+		}
+		$graded = json_encode($graded);
+		return $graded;
+	}
+	
+	function studentScores($con,$ucid) {
+		//Function to return examName, examQuestions, questionScore, and overall score for the specified student
+		$ucid = mysqli_real_escape_string($con,$ucid);
+		$sql = "SELECT ge.*,ce.examName,ce.answer FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.ucid='$ucid' and ge.released=1;";
+		$result = mysqli_query($con,$sql);
+		if(mysqli_num_rows($result)>0){
+			while($row = mysqli_fetch_assoc($result)){
+				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
+								'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
 								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
 			}
 		}else {
@@ -293,28 +318,28 @@
 		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
-	function reviewScore($con,$gradedID) {
-		$gradedID = mysqli_real_escape_string($con,$gradedID);
-		$sql = "SELECT ge.*,ce.examName FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.gradedID=$gradedID;";
+	function reviewScore($con,$comID) {
+		$comID = mysqli_real_escape_string($con,$comID);
+		$sql = "SELECT ge.*,ce.examName,ce.answer FROM rjb57.CS490_GradedExams ge inner join CS490_CompletedExams ce on completedExamID=completedID WHERE ge.completedExamID=$comID;";
 		$result = mysqli_query($con,$sql);
 		if(mysqli_num_rows($result)>0){
 			while($row = mysqli_fetch_assoc($result)){
-				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
+				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'],'answer'=>$row['answer'], 'completedExamID'=>$row['completedExamID'],
 								'ucid'=>$row['ucid'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName'],'sql'=>$sql);
 			}
 		}else {
-				$graded=array('error'=>"gradedID:'$gradedID' not specified or not the right format.",'sql'=>$sql);
+				$graded=array('error'=>"completedExamID:'$comletedID' not specified or not the right format.",'sql'=>$sql);
 			}
 		$graded = json_encode($graded);
 		return $graded;
 	}
 	
-	function professorComment($con,$gradedID,$reasons,$newScore,$profComments) {
+	function professorComment($con,$completedExamID,$reasons,$newScore,$profComments) {
 		$gradedID = mysqli_real_escape_string($con,$gradedID);
 		$profComments = mysqli_real_escape_string($con,$profComments);
 		$newScore = mysqli_real_escape_string($con,$newScore);
-		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE gradedID=$gradedID;";
+		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE completedExamID=$completedExamID;";
 		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
