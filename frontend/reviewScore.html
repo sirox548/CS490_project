@@ -72,12 +72,64 @@ function submitScore(){
   var reasons = document.getElementsByName('reason');
   var points = document.getElementsByName('points');
 
-  console.log(comments);
-  console.log(reasons[0].textContent);
-  console.log(points);
-  
+  var ucid = localStorage.getItem('ucid');
+  var examId = localStorage.getItem('completedExamID');
 
+  var questionReasons = "";
+  var questionPoints = 0;
+  for (var i = 0; i<reasons.length; i++){
+    if (reasons[i].textContent == "Extra points awarded to student"){
+      // Then it is the end of a question, send info and reset
+      var reason = reasons[i].textContent;
+      var pointValue = points[i].textContent;
+      var p = Number(pointValue.split('/')[0]);
+      questionPoints += p;
+      questionReasons += reason + "." + pointValue + "~";
+
+
+      console.log("done");
+      console.log(questionReasons);
+      console.log(questionPoints);
+      sendReviewedScore(ucid, examId, questionPoints, comments, questionReasons);
+      // Reset to continue to next question
+      questionReasons = "";
+      questionPoints = 0;
+      // Should maybe change to check colons at end of each line
+
+    }
+    else{
+      var reason = reasons[i].textContent;
+      var pointValue = points[i].textContent;
+      var p = Number(pointValue.split('/')[0]);
+      questionPoints += p;
+      questionReasons += reason + "." + pointValue + "~";
+
+    }
+  }
 }
+
+function sendReviewedScore(ucid, completedExamID, questionPoints, comments, questionReasons){
+	var request;
+	try {
+		request = new XMLHttpRequest();
+	}
+	catch{
+		request = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  
+request.onreadystatechange = function () {
+  if (request.readyState === 4 && request.status == 200) {
+    console.log("success")
+  }
+}
+
+	var data="postType=reviseScore" + "&ucid=" + ucid + "&completedExamID=" + completedExamID + "&revisedScores=" + encodeURIComponent(questionPoints) + "&comments=" + encodeURIComponent(comments) + "&reasons=" + encodeURIComponent(questionReasons);
+
+	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	request.send(data);
+}
+  
 </script>
 
 </body>
