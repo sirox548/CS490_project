@@ -208,6 +208,17 @@ function reviewScore(values){
 	window.location.href = '/~anm52/CS490/reviewScore.html';
   }
 
+  function reviewScoreStudent(values){
+	//given ucid and examName should return the exam questions, score for each question, any comments for each question, and total score
+	var ucid = values.id;
+	var completedExamID = values.name;
+
+	localStorage.setItem('completedExamID', completedExamID);
+	localStorage.setItem('ucid', ucid);
+
+	window.location.href = '/~anm52/CS490/reviewScoreStudent.html';
+  }
+
 
 //   function submitScore() {
 // 	  //should save the revised score

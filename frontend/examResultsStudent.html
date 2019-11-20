@@ -25,20 +25,28 @@
 
 <script>
   window.onload = function() {
-    var data = "<th>Exam Name</th><th>Score</th><th>Review Results</th>"
+    var data = "<th>Exam Name</th><th>Review</th>";
     var request = new XMLHttpRequest();
+    var params = "postType=scores";
     var user = localStorage.getItem('ucid');
-    var params = "postType=studentScores&ucid="+user;
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
-        for (i = 0; i<responseData.length; i++){
-          var resp = responseData[i];
-          data+='<tr><td>'+resp.examName+
-                '</td><td>'+resp.pointsReceived+
-                '</td><td>'+'<input type="button" onclick="studentReviewScore(this);" id="'+resp.ucid+'" name="'+resp.gradedID+'"value="Review Score">'+
+        var examIDS = [];
+        var examNames = [];
+        for (var i = 0; i<responseData.length; i++){
+          resp = responseData[i];
+          if (resp.ucid == user){
+            if (examIDS.indexOf(resp.completedExamID) === -1) examIDS.push(resp.completedExamID);
+            if (examNames.indexOf(resp.examName) === -1) examNames.push(resp.examName);
+          }
+        }
+
+        for ( var i = 0; i<examIDS.length; i++){
+          data+='<tr><td>'+examNames[i]+
+                '</td><td>'+'<input type="button" onclick="reviewScoreStudent(this);" id="'+user+'" name="'+examIDS[i]+'"value="Review Score">'+
                 '</td></tr>';
         }
         document.getElementById('studentScores').innerHTML = data;
