@@ -1,76 +1,29 @@
 <?php
 $postType=$_POST['postType'];
 $ucid=$_POST['ucid'];
-$password=$_POST['pwd'];
-$question=$_POST['question'];
-$funcName=$_POST['funcName'];
-$params=$_POST['params'];
-$input=$_POST['input'];
-$output=$_POST['output'];
-$difficulty=$_POST['difficulty'];
-$category=$_POST['category'];
 
 $examName=$_POST['examName'];
 $examQuestions=$_POST['questions'];
-$pointValues=$_POST['pointValues'];
 
-$questionID = $_POST['questionID'];
 $answers = $_POST['answers'];
 
-$gradedID = $_POST['gradedID'];
 $completedExamID = $_POST['completedExamID'];
-$revisedScores = $_POST['revisedScores'];
-$reasons = $_POST['reasons'];
-$profComments = $_POST['comments'];
 
-$newQuestions=$_POST['newQuestions'];
-$paramsValues=$_POST['paramsValues'];
-$testcase=$_POST['testcase'];
-$exampoints=$_POST['exampoints'];
 $studentanswer=$_POST['answers'];
-$questionref=$_POST['questionref'];
-
-$gradepointsreceived=$_POST['gradepointsreceived'];
-
-$validfuncnames=$_POST['validfuncnames'];
 
 $i=0;
 $j=0;
 $k=0;
 $studentanswer= rawurldecode($studentanswer);
 
-$stringdata =  array(  'postType'=> $postType,
-                       'ucid'=> $ucid,
-                       'pwd'=> $password,
-                       'question'=> $question,
-                       'funcName'=> $funcName,
-                       'params'=> $params,
-                       'input'=> $input,
-                       'output'=> $output,
-                       'difficulty'=> $difficulty,
-                       'category'=> $category,
-                       'examName'=> $examName,
-                       'questions'=> $examQuestions,
-                       'pointValues' => $pointValues,
-                       'questionID' => $questionID,
-                       'answers'=> $answers,
-                       'newQuestions'=> $newQuestions,
-                       'paramsValues'=> $paramsValues,
-                       'testcase'=> $testcase,
-                       'exampoints'=> $exampoints,
-                       'studentanswer'=> $studentanswer,
-                       'questionref'=> $questionref,
-                       'gradepointsreceived'=> $gradepointsreceived,                       
-                       'validfuncnames'=> $validfuncnames,
-                       'gradedID'=>$gradedID,
-                       'completedExamID'=>$completedExamID,
-                       'reasons'=>$reasons,
-                       'comments',$profComments,
-                       'revisedScores'=>$revisedScores);
+$stringdata =  array(  'postType'=> $postType, 'ucid'=> $ucid, 'pwd'=> $password,
+                        'examName'=> $examName, 'questions'=> $examQuestions,
+                        'answers'=> $answers,'studentanswer'=> $studentanswer,
+                        'completedExamID'=>$completedExamID);
 $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($infoback, CURLOPT_POST, 1);
-curl_setopt($infoback, CURLOPT_POSTFIELDS, http_build_query($stringdata));
+curl_setopt($infoback, CURLOPT_POSTFIELDS, $_POST);//http_build_query($stringdata));
 curl_setopt($infoback, CURLOPT_URL,"https://web.njit.edu/~rjb57/CS490/betabackend.php");
 $stringrcvd = curl_exec($infoback);
 curl_close ($infoback);
@@ -123,19 +76,21 @@ if($postType=='submitExam')
         //main grading funciton to be called    
             $gradecalc1 = gradingfunc($answer, $functionname, $parameternames, $case_input, $case_output, $ucid, $currentPoints, $validfuncname);
         //end of main function
-            $gradewithcomment = explode("^", $gradecalc1);
-            $gradecomments = $gradewithcomment[0];
-            $gradewocomment = $gradewithcomment[1];
-            $gradeanswer += $gradewithcomment[1]; 
+            $splitGradingResults = explode("^", $gradecalc1);
+            $gradecomments = $splitGradingResults[0];
+            $correctExam = $splitGradingResults[1];
+            $gradeReceived = $splitGradingResults[2];
+            $gradeanswer += $gradeReceived; 
             $questionref = $questionnumber[$j];
             $totalpoints += $currentPoints;
           
             $stringdata2 = array('postType'=>'storeComment', 
                                   'reasons'=>$gradecomments, 
-                                  'pointsReceived'=>$gradewocomment,
+                                  'pointsReceived'=>$gradeReceived,
                                   'ucid'=>$ucid, 
                                   'questionID'=>$questID, 
-                                  'completedExamID'=>$completedExamID);
+                                  'completedExamID'=>$completedExamID,
+                                  'correctExam'=>$correctExam);
             $questionback2 = curl_init();
             curl_setopt($questionback2, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($questionback2, CURLOPT_POST, 1);
@@ -143,7 +98,7 @@ if($postType=='submitExam')
             curl_setopt($questionback2, CURLOPT_URL, "https://web.njit.edu/~rjb57/CS490/betabackend.php");  
             $stringquestionback2 = curl_exec($questionback2);
             curl_close($questionback2);
-            echo "\n\n";
+            //echo "\n\n";
             //print_r($stringdata2);
            // print_r($stringquestionback2);
           }
@@ -275,12 +230,11 @@ if($postType=='submitExam')
           }
         }
         
-        //Show corrections in the comments
-        if(strlen($gradecomments)>0){
-          $gradecomments .= "Corrected exam:\n".$studentresp."~";
+        //Save the corrected exam
+        $correctExam = "";
+        if(strlen($totalgrade)!=17){
+          $correctExam = $studentresp;        
         }
-        
-        
         //Run test cases
           $temp = explode("~", $testcasein); 
           $testcasenumber = count($temp);
@@ -323,7 +277,7 @@ if($postType=='submitExam')
         return $grade;*/
         $gradecomments .= "Extra points awarded to student.$extraPoints/$extraPoints";
         $totalgrade += $extraPoints;
-        $returnGrade = $gradecomments . $carrot . $totalgrade;
+        $returnGrade = $gradecomments . $carrot . $correctExam . $carrot . $totalgrade;
         return $returnGrade;
       }
 
