@@ -17,9 +17,11 @@ $pointValues=$_POST['pointValues'];
 $questionID = $_POST['questionID'];
 $answers = $_POST['answers'];
 
-$ = $_POST['gradedID'];
+$gradedID = $_POST['gradedID'];
 $completedExamID = $_POST['completedExamID'];
+$revisedScores = $_POST['revisedScores'];
 $reasons = $_POST['reasons'];
+$profComments = $_POST['comments'];
 
 $newQuestions=$_POST['newQuestions'];
 $paramsValues=$_POST['paramsValues'];
@@ -62,7 +64,9 @@ $stringdata =  array(  'postType'=> $postType,
                        'validfuncnames'=> $validfuncnames,
                        'gradedID'=>$gradedID,
                        'completedExamID'=>$completedExamID,
-                       'reasons'=>$reasons);
+                       'reasons'=>$reasons,
+                       'comments',$profComments,
+                       'revisedScores'=>$revisedScores);
 $infoback = curl_init();
 curl_setopt($infoback, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($infoback, CURLOPT_POST, 1);

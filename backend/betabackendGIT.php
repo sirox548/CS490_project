@@ -95,9 +95,9 @@
 		case "revisedScores":
 			$profComments = $_POST['comments'];
 			$newScore = $_POST['revisedScore'];
-			$completedExamID = $_POST['completedExamID'];
+			$gradedID = $_POST['gradedID'];
 			$reasons = $_POST['reasons'];
-			professorComment($con, $completedExamID, $reasons, $newScore, $profComments);
+			professorComment($con, $gradedID, $reasons, $newScore, $profComments);
 			break;
 		default:
 			echo json_encode(array('database'=>false,'log'=>"Incorrect postType: '$postType'"));
@@ -217,7 +217,7 @@
 				while($row = mysqli_fetch_assoc($result)){
 					$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
 									'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-									'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+									'professorComments'=>$row['professorComments'],'examName'=>$row['examName'],'released'=>$row['released']);
 				}
 			}else {
 				$graded=[];
@@ -233,7 +233,7 @@
 			while($row = mysqli_fetch_assoc($result)){
 				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
 								'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName'],'released'=>$row['released']);
 			}
 		}else {
 			$graded=[];
@@ -251,7 +251,7 @@
 			while($row = mysqli_fetch_assoc($result)){
 				$graded[] = array('gradedID'=>$row['gradedID'],'questionID'=>$row['questionID'], 'completedExamID'=>$row['completedExamID'],
 								'ucid'=>$row['ucid'], 'answer'=>$row['answer'], 'pointsReceived'=>$row['pointsReceived'], 'reasons'=>$row['reasons'],
-								'professorComments'=>$row['professorComments'],'examName'=>$row['examName']);
+								'professorComments'=>$row['professorComments'],'examName'=>$row['examName'],'released'=>$row['released']);
 			}
 		}else {
 				$graded=array('log'=>'No values returned.','sql'=>$sql);
@@ -335,11 +335,12 @@
 		return $graded;
 	}
 	
-	function professorComment($con,$completedExamID,$reasons,$newScore,$profComments) {
+	function professorComment($con,$gradedID,$reasons,$newScore,$profComments) {
 		$gradedID = mysqli_real_escape_string($con,$gradedID);
+		$reasons = mysqli_real_escape_string($con,$reasons);
 		$profComments = mysqli_real_escape_string($con,$profComments);
 		$newScore = mysqli_real_escape_string($con,$newScore);
-		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE completedExamID=$completedExamID;";
+		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE gradedID=$gradedID;";
 		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
 	
