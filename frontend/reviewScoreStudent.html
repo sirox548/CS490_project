@@ -37,7 +37,7 @@
     var request = new XMLHttpRequest();
     var ucid = localStorage.getItem('ucid');
     var examId = localStorage.getItem('completedExamID');
-
+    var data = "<th>Criteria</th><th>Points</th>"
     //TODO: need to update reasons, comments, and revisedScore
     var params="postType=studentScores" + "&ucid=" + ucid + "&completedExamID=" + examId;
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true);
@@ -45,6 +45,43 @@
     request.onreadystatechange = function() {
       if (request.readyState === 4 && request.status == 200) {
         var responseData = JSON.parse(request.responseText);
+        var data = "<br>";
+        var answers = "<br><br><br><br><br><br><br><br><br><br>";
+        var questionNumber = 0;
+        for (var i = 0; i<responseData.length; i++){
+          var resp = responseData[i];
+          if (resp.completedExamID == examId){
+            var ans = resp.answer.split('~');
+            var a = 0;
+            answers += ans[a];
+            a++;
+            questionNumber += 1;
+            data += questionNumber + ')'+" Received " +resp.pointsReceived+ " points<br><br>";
+            reasons = resp.reasons.split("~");
+            var tableData = "<table><th>Criteria</th><th>Points</th>";
+            for(var j = 0; j<reasons.length; j++){
+              reason = reasons[j].split('.');
+              if (reason[1] == undefined){
+                reason[1] = "";
+              }
+              s = reason[1].split('/');
+
+              if (reason[0].split(" ")[0] != "Corrected" && s[0].trim() != s[1].trim()  ){
+                tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
+                answers += '<br><br>';
+                console.log(s[0]);
+                console.log(s[1]);
+              }
+
+
+            }
+            tableData += "</table><br>"
+            data += tableData;
+          }
+        }
+        document.getElementById("score").innerHTML = data;
+        document.getElementById("studentAnswer").innerHTML = answers;
+        console.log(answers);
       }
     }
     request.send(params);

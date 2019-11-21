@@ -27,8 +27,9 @@
   window.onload = function() {
     var data = "<th>Exam Name</th><th>Review</th>";
     var request = new XMLHttpRequest();
-    var params = "postType=scores";
+    
     var user = localStorage.getItem('ucid');
+    var params = "postType=studentScores" + "&ucid=" + user;
     request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
     request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
     request.onreadystatechange = function() {
