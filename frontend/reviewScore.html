@@ -54,13 +54,14 @@
         var answers = "<br><br><br><br><br><br><br><br><br><br>";
         var questionNumber = 0;
         var gradedIDs = [];
+        var a = 0;
         for (var i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           if (resp.completedExamID == examId){
             gradedIDs.push(resp.gradedID);
             localStorage.setItem('gradedIDs', gradedIDs);
             var ans = resp.answer.split('~');
-            var a = 0;
+            
             answers += ans[a];
             a++;
             questionNumber += 1;
@@ -98,6 +99,8 @@ function submitScore(){
 
   var questionReasons = "";
   var questionPoints = 0;
+  var j = 0;
+
   for (var i = 0; i<reasons.length; i++){
     if (reasons[i].textContent == "Extra points awarded to student"){
       // Then it is the end of a question, send info and reset
@@ -111,7 +114,8 @@ function submitScore(){
       console.log("done");
       console.log(examIds);
       console.log(examIds[1]);
-      sendReviewedScore(ucid, examIds[i], questionPoints, comments, questionReasons);
+      sendReviewedScore(ucid, examIds[j], questionPoints, comments, questionReasons);
+      j++;
       // Reset to continue to next question
       questionReasons = "";
       questionPoints = 0;
