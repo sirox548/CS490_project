@@ -32,7 +32,7 @@
 	if ( isset($_POST['pointValues'])){ $pointValues=$_POST['pointValues'];}
 	if ( isset($_POST['answers'])){ $answers=$_POST['answers'];}
 	if ( isset($_POST['revisedScores'])){ $revisedScores=$_POST['revisedScores'];}
-	if ( isset($_POST['completedExamID'])){ $gradedID=$_POST['completedExamID'];}
+	if ( isset($_POST['completedExamID'])){ $completedExamID=$_POST['completedExamID'];}
 	if ( isset($_POST['comments'])){ $comments=$_POST['comments'];}
 	if ( isset($_POST['reasons'])){ $reasons=$_POST['reasons'];}
 
@@ -73,7 +73,7 @@
 		//submits exam that student took
 		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'examName' => $examName, 'questions' => $questions, 'answers' => $answers);
 	}
-	elseif ($postType == "reviseScore") {
+	elseif ($postType == "revisedScores") {
 		//revises the score that was originally given to student
 		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'completedExamID' => $completedExamID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
 	}

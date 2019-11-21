@@ -17,7 +17,7 @@ $pointValues=$_POST['pointValues'];
 $questionID = $_POST['questionID'];
 $answers = $_POST['answers'];
 
-$gradedID = $_POST['gradedID'];
+$ = $_POST['gradedID'];
 $completedExamID = $_POST['completedExamID'];
 $reasons = $_POST['reasons'];
 

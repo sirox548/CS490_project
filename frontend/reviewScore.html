@@ -141,7 +141,7 @@ request.onreadystatechange = function () {
   }
 }
 
-	var data="postType=reviseScore" + "&ucid=" + ucid + "&completedExamID=" + completedExamID + "&revisedScores=" + encodeURIComponent(questionPoints) + "&comments=" + encodeURIComponent(comments) + "&reasons=" + encodeURIComponent(questionReasons);
+	var data="postType=revisedScores" + "&ucid=" + ucid + "&completedExamID=" + completedExamID + "&revisedScores=" + encodeURIComponent(questionPoints) + "&comments=" + encodeURIComponent(comments) + "&reasons=" + encodeURIComponent(questionReasons);
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
