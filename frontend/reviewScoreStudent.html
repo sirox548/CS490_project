@@ -69,8 +69,6 @@
               if (reason[0].split(" ")[0] != "Corrected" && s[0].trim() != s[1].trim()  ){
                 tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
                 answers += '<br><br>';
-                console.log(s[0]);
-                console.log(s[1]);
               }
 
 
@@ -81,7 +79,6 @@
         }
         document.getElementById("score").innerHTML = data;
         document.getElementById("studentAnswer").innerHTML = answers;
-        console.log(answers);
       }
     }
     request.send(params);

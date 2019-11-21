@@ -53,9 +53,12 @@
         var data = "<br>";
         var answers = "<br><br><br><br><br><br><br><br><br><br>";
         var questionNumber = 0;
+        var gradedIDs = [];
         for (var i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           if (resp.completedExamID == examId){
+            gradedIDs.push(resp.gradedID);
+            localStorage.setItem('gradedIDs', gradedIDs);
             var ans = resp.answer.split('~');
             var a = 0;
             answers += ans[a];
@@ -91,7 +94,7 @@ function submitScore(){
   var points = document.getElementsByName('points');
 
   var ucid = localStorage.getItem('ucid');
-  var examId = localStorage.getItem('completedExamID');
+  var examIds = localStorage.getItem('gradedIDs').split(",");
 
   var questionReasons = "";
   var questionPoints = 0;
@@ -106,9 +109,9 @@ function submitScore(){
 
 
       console.log("done");
-      console.log(questionReasons);
-      console.log(questionPoints);
-      sendReviewedScore(ucid, examId, questionPoints, comments, questionReasons);
+      console.log(examIds);
+      console.log(examIds[1]);
+      sendReviewedScore(ucid, examIds[i], questionPoints, comments, questionReasons);
       // Reset to continue to next question
       questionReasons = "";
       questionPoints = 0;
@@ -126,7 +129,7 @@ function submitScore(){
   }
 }
 
-function sendReviewedScore(ucid, completedExamID, questionPoints, comments, questionReasons){
+function sendReviewedScore(ucid, gradedID, questionPoints, comments, questionReasons){
 	var request;
 	try {
 		request = new XMLHttpRequest();
@@ -141,7 +144,7 @@ request.onreadystatechange = function () {
   }
 }
 
-	var data="postType=revisedScores" + "&ucid=" + ucid + "&completedExamID=" + completedExamID + "&revisedScores=" + encodeURIComponent(questionPoints) + "&comments=" + encodeURIComponent(comments) + "&reasons=" + encodeURIComponent(questionReasons);
+	var data="postType=revisedScores" + "&ucid=" + ucid + "&gradedID=" + gradedID + "&revisedScores=" + encodeURIComponent(questionPoints) + "&comments=" + encodeURIComponent(comments) + "&reasons=" + encodeURIComponent(questionReasons);
 
 	request.open("POST", "https://web.njit.edu/~anm52/CS490/posts.php", true)
 	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");

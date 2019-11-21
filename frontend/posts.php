@@ -17,6 +17,7 @@
 	$answers = "none";
 	$revisedScores = "none";
 	$completedExamID = "none";
+	$gradedID = "none";
 	
 	if ( isset($_POST['ucid'])){ $username=$_POST['ucid'];}
 	if ( isset($_POST['pwd'])){ $password=$_POST['pwd'];}    
@@ -35,6 +36,7 @@
 	if ( isset($_POST['completedExamID'])){ $completedExamID=$_POST['completedExamID'];}
 	if ( isset($_POST['comments'])){ $comments=$_POST['comments'];}
 	if ( isset($_POST['reasons'])){ $reasons=$_POST['reasons'];}
+	if ( isset($_POST['gradedID'])){ $gradedID=$_POST['gradedID'];}
 
 
 	//post type must be implemented on back and middle 
@@ -75,7 +77,7 @@
 	}
 	elseif ($postType == "revisedScores") {
 		//revises the score that was originally given to student
-		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'completedExamID' => $completedExamID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
+		$stringdata =  array('postType'=> $postType, 'ucid' => $username, 'gradedID' => $gradedID, 'revisedScore' => $revisedScores, 'comments' => $comments, 'reasons' => $reasons);
 	}
 
 	 
