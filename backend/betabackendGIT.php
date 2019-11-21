@@ -133,7 +133,7 @@
 		$looptype = mysqli_real_escape_string($con,$looptype);
 		$sql = "INSERT INTO rjb57.CS490_QuestionBank (fullQuestion,funcName,params,input,output,difficulty,category,looptype) VALUES ('";
 		$sql = $sql.$question."','$funcname','$params','$input','$output','$difficulty','$category','$looptype');";
-		mysqli_query($con,$sql);
+		$result = mysqli_query($con,$sql);
 		if ($result){
 			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
 		}else {
@@ -342,7 +342,7 @@
 		$reasons = mysqli_real_escape_string($con,$reasons);
 		$profComments = mysqli_real_escape_string($con,$profComments);
 		$newScore = mysqli_real_escape_string($con,$newScore);
-		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments' and reasons='$reasons' and pointsReceived=$newScore and released=1 WHERE gradedID=$gradedID;";
+		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments', reasons='$reasons', pointsReceived=$newScore, released=1 WHERE gradedID=$gradedID;";
 		mysqli_query($con,$sql);
 		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
 	}
