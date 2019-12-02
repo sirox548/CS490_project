@@ -25,7 +25,8 @@
 
     <div class="col">
         <div class="rightside" style="background:white;">
-            <div id="studentAnswer" style="white-space: pre-wrap; text-align: center"></div>
+          <br>
+            <div id="studentAnswer"></div>
         </div>
       </div>
 
@@ -48,17 +49,18 @@
         var data = "<br>";
         var answers = "<br><br><br><br><br><br><br><br><br><br>";
         var questionNumber = 0;
+        var a = 0;
         for (var i = 0; i<responseData.length; i++){
           var resp = responseData[i];
           if (resp.completedExamID == examId){
             var ans = resp.answer.split('~');
-            var a = 0;
-            answers += ans[a];
-            a++;
+
+
             questionNumber += 1;
             data += questionNumber + ')'+" Received " +resp.pointsReceived+ " points<br><br>";
             reasons = resp.reasons.split("~");
             var tableData = "<table><th>Criteria</th><th>Points</th>";
+
             for(var j = 0; j<reasons.length; j++){
               reason = reasons[j].split('.');
               if (reason[1] == undefined){
@@ -66,19 +68,21 @@
               }
               s = reason[1].split('/');
 
-              if (reason[0].split(" ")[0] != "Corrected" && s[0].trim() != s[1].trim()  ){
+              if (reason[0].split(" ")[0] != "Corrected" && s[0] != s[1]  ){
                 tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
                 answers += '<br><br>';
               }
 
 
             }
-            tableData += "</table><br>"
+            tableData += "</table><br>";
+            //tableData += '<div style="white-space: pre-wrap; text-align: center>' + ans[a] + '</div>';
+            a++;
             data += tableData;
           }
         }
         document.getElementById("score").innerHTML = data;
-        document.getElementById("studentAnswer").innerHTML = answers;
+        //document.getElementById("studentAnswer").innerHTML = dataR;
       }
     }
     request.send(params);
