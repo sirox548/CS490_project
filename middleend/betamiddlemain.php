@@ -213,7 +213,7 @@ if($postType=='submitExam')
               {$gradecomments .= "Print not used.0/3~"; $grade-=3; break;}
               break;
             default:
-              $gradecomments .= "No contraints. 3/3~";
+              $gradecomments .= "No contraints.3/3~";
               $totalgrade +=3;
               break;
           }
@@ -254,15 +254,23 @@ if($postType=='submitExam')
                 $execPythonScript = $studentresp. "\n" . "print($truefuncName($newparams))";
               }
               file_put_contents($file, $execPythonScript);
-              $runpython = exec("python $file");
+              //$runpython = exec("python $file");
+              $runpython = exec("python $file 2>&1",$py_error, $iserror);
+                if($iserror>0){
+                  $runpython = $py_error[count($py_error)-1];
+                }elseif (count($py_error)>1){
+                    foreach ($py_error as $key => $val) {
+                      $runpython .= $val."\n";
+                    }
+                  }
     //          echo "\nEXEC:\n".$execPythonScript."\n\n";
     //          $runpython = rtrim(shell_exec("python -c '$execPythonScript'"));
               if ($runpython == $testcaseout1)
                 { $gradecomments .= "Test case for $truefuncName($newparams) passed.$testinggradevalue/$testinggradevalue~";
                   $totalgrade += $testinggradevalue;}
-              else{ if($runpython == "")
+              else{ if($iserror>0)
                     { $grade-=$testinggradevalue;
-                      $gradecomments .= "Testcase failed for: $truefuncName($newparams), \noutput suppose to be: $testcaseout1, where student output has error.0/$testinggradevalue~";}
+                      $gradecomments .= "Testcase failed for: $truefuncName($newparams), \noutput suppose to be: $testcaseout1, where student output has error:\n$runpython.0/$testinggradevalue~";}
                   else
                     { $testinggradevalue = round($testinggradevalue, 0);
                       $grade-=$testinggradevalue;
