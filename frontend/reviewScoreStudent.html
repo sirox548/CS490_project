@@ -72,7 +72,7 @@
               s = reason[1].split('/');
 
               if (reason[0].split(" ")[0] != "Corrected" && s[0] != s[1]  ){
-                tableData += '<tr><td><div name="reason" contenteditable>'+reason[0]+'</div></td><td><div name="points" contenteditable>'+reason[1]+'</div></td></tr>';
+                tableData += '<tr><td>'+reason[0]+'</td><td>'+reason[1]+'</td></tr>';
                 answers += '<br><br>';
               }
 
