@@ -19,6 +19,7 @@
             <div class="leftside">
                     <br>
                     <div id="grade"></div>
+                    <div id="comments"></div>
                     <div id="score"></div>
                   </div>
         </div>
@@ -86,6 +87,7 @@
         }
         document.getElementById("score").innerHTML = data;
         document.getElementById("grade").innerHTML = "Grade: " + score + "/100";
+        document.getElementById("comments").innerHTML = "Comments: " + resp.professorComments;
         //document.getElementById("studentAnswer").innerHTML = dataR;
       }
     }
