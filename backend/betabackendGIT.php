@@ -135,7 +135,7 @@
 		$sql = $sql.$question."','$funcname','$params','$input','$output','$difficulty','$category','$looptype');";
 		$result = mysqli_query($con,$sql);
 		if ($result){
-			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname."));
+			return json_encode(array('database'=>'success','log'=>"Added question with function name $funcname.", 'sql'=>$sql));
 		}else {
 			return json_encode(array('database'=>'failure','log'=>'Something went wrong.','result'=>mysqli_error($con),'sql'=>$sql));
 		}
@@ -344,7 +344,12 @@
 		$newScore = mysqli_real_escape_string($con,$newScore);
 		$sql = "UPDATE rjb57.CS490_GradedExams SET professorComments='$profComments', reasons='$reasons', pointsReceived=$newScore, released=1 WHERE gradedID=$gradedID;";
 		mysqli_query($con,$sql);
-		echo json_encode(array('result'=>mysqli_error($con),'sql'=>$sql));
+		$result = mysqli_error($con);
+		if($result==""){
+			echo json_encode(array('database'=>'success','sql'=>$sql));
+		}else{
+			echo json_encode(array('database'=>'failure','result'=>$result,'sql'=>$sql));
+		}
 	}
 	
 	mysqli_close($con);
