@@ -37,6 +37,7 @@
 	if ( isset($_POST['comments'])){ $comments=$_POST['comments'];}
 	if ( isset($_POST['reasons'])){ $reasons=$_POST['reasons'];}
 	if ( isset($_POST['gradedID'])){ $gradedID=$_POST['gradedID'];}
+	if ( isset($_POST['looptype'])){ $looptype=$_POST['looptype'];}
 
 
 	//post type must be implemented on back and middle 
@@ -45,7 +46,7 @@
 	}
 	elseif ($postType == "addQuestion") {
 		//Should add a wustion in the database
-		$stringdata =  array('postType'=> $postType, 'question'=> $question, 'funcName' => $funcName, 'params'=> $params, 'input' => $input,'output' => $output, 'difficulty' => $difficulty, 'category' => $category );
+		$stringdata =  array('postType'=> $postType, 'question'=> $question, 'funcName' => $funcName, 'params'=> $params, 'input' => $input,'output' => $output, 'difficulty' => $difficulty, 'category' => $category, 'looptype' => $looptype );
 	}
 	elseif ($postType == "questionBank") {
 		//should return all questions saved in the databade
